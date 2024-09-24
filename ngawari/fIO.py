@@ -24,7 +24,7 @@ try:
     import xml.etree.cElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET
-from typing import List, Dict, Union, Optional
+from typing import List, Dict, Union, Optional, Tuple
 
 def remove_symbols(text: str) -> str:
     """
@@ -38,8 +38,7 @@ def remove_symbols(text: str) -> str:
     """
     return ''.join(c for c in text if ud.category(c) != 'So')
 
-allowed_characters = set(string.printable + 'ßöüäéèà')
-def remove_not_allowed(text: str) -> str:
+def remove_not_allowed(text: str, allowed_characters: str = string.printable + 'ßöüäéèà') -> str:
     """
     Remove characters that are not in the allowed set.
 
@@ -744,6 +743,16 @@ def nxToVtk(G: nx.Graph, nodeLocationDict: Dict[int, List[float]]) -> vtk.vtkPol
 
 # =========================================================================
 def writeNifti(data: vtk.vtkDataObject, fileName: str) -> str:
+    """
+    Write a NIfTI file.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object to write.
+        fileName (str): The path of the NIfTI file to write to.
+
+    Returns:
+        str: The path of the NIfTI file written to.
+    """
     writer = vtk.vtkNIFTIImageWriter()
     writer.SetFileName(fileName)
     writer.SetInputData(data)
@@ -751,12 +760,30 @@ def writeNifti(data: vtk.vtkDataObject, fileName: str) -> str:
     return fileName
 
 def readNifti(fileName: str) -> vtk.vtkDataObject:
+    """
+    Read a NIfTI file.
+
+    Args:
+        fileName (str): The path of the NIfTI file to read.
+
+    Returns:
+        vtk.vtkDataObject: The VTK data object.
+    """
     reader = vtk.vtkNIFTIImageReader()
     reader.SetFileName(fileName)
     reader.Update()
     return reader.GetOutput()
 
 def readNRRD(fileName: str) -> vtk.vtkDataObject:
+    """
+    Read a NRRD file.
+
+    Args:
+        fileName (str): The path of the NRRD file to read.
+
+    Returns:
+        vtk.vtkDataObject: The VTK data object.
+    """
     reader = vtk.vtkNrrdReader()
     reader.SetFileName(fileName)
     reader.Update()
@@ -768,12 +795,14 @@ def readNRRD(fileName: str) -> vtk.vtkDataObject:
 ##          PVD Stuff
 # =========================================================================
 def _writePVD(rootDirectory: str, filePrefix: str, outputSummary: Dict[int, Dict[str, Union[str, float]]]) -> str:
-    '''
-    :param rootDirectory:
-    :param filePrefix:
-    :param outputSummary: dict of dicts : { timeID : {TrueTime : float, FileName : str}
-    :return: full file name
-    '''
+    """
+    Write a PVD file. For internal use only.
+
+    Args:
+        rootDirectory (str): The root directory.
+        filePrefix (str): The file prefix.
+        outputSummary (Dict[int, Dict[str, Union[str, float]]]): The output summary.
+    """
     fileOut = os.path.join(rootDirectory, filePrefix + '.pvd')
     with open(fileOut, 'w') as f:
         f.write('<?xml version="1.0"?>\n')
@@ -789,6 +818,18 @@ def _writePVD(rootDirectory: str, filePrefix: str, outputSummary: Dict[int, Dict
 
 
 def _makePvdOutputDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], filePrefix: str, fileExtn: str, subDir: str = '') -> Dict[int, Dict[str, Union[str, float]]]:
+    """
+    Make a PVD output dictionary. For internal use only.
+
+    Args:
+        vtkDict (Dict[Union[str, float], vtk.vtkDataObject]): The dictionary of VTK data objects.
+        filePrefix (str): The file prefix.
+        fileExtn (str): The file extension.
+        subDir (str, optional): The subdirectory. Defaults to ''.
+
+    Returns:
+        Dict[int, Dict[str, Union[str, float]]]: The output summary.
+    """
     outputSummary = {}
     myKeys = vtkDict.keys()
     myKeys = sorted(myKeys)
@@ -800,6 +841,16 @@ def _makePvdOutputDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], file
     return outputSummary
 
 def __writePvdData(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir: str, filePrefix: str, fileExtn: str, subDir: str = '') -> None:
+    """
+    Write PVD data. For internal use only.
+
+    Args:
+        vtkDict (Dict[Union[str, float], vtk.vtkDataObject]): The dictionary of VTK data objects.
+        rootDir (str): The root directory.
+        filePrefix (str): The file prefix.
+        fileExtn (str): The file extension.
+        subDir (str, optional): The subdirectory. Defaults to ''.
+    """
     myKeys = vtkDict.keys()
     myKeys = sorted(myKeys)
     for timeId in range(len(myKeys)):
@@ -814,12 +865,16 @@ def writeVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir
     """
     Write dict of time:vtkObj to pvd file
         If dict is time:fileName then will copy files
-    :param vtkDict: python dict - time:vtkObj
-    :param rootDir: directory
-    :param filePrefix: make filePrefix.pvd
-    :param fileExtn: file extension (e.g. vtp, vti, vts etc)
-    :param BUILD_SUBDIR: bool - to build subdir (filePrefix.pvd in root, then data in root/filePrefix/
-    :return: full file name
+
+    Args:
+        vtkDict (Dict[Union[str, float], vtk.vtkDataObject]): The dictionary of VTK data objects.
+        rootDir (str): The root directory.
+        filePrefix (str): make filePrefix.pvd
+        fileExtn (str): file extension (e.g. vtp, vti, vts etc)
+        BUILD_SUBDIR (bool, optional): to build subdir (filePrefix.pvd in root, then data in root/filePrefix/). Defaults to True.
+    
+    Returns:
+        str: full file name
     """
     filePrefix = os.path.splitext(filePrefix)[0]
     subDir = ''
@@ -836,10 +891,17 @@ def writeVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir
 
 
 def pvdAddTimeToFieldData(pvdf_or_vtkDict: Union[str, Dict[Union[str, float], vtk.vtkDataObject]]) -> Union[str, Dict[Union[str, float], vtk.vtkDataObject]]:
-    rr = None
-    if type(pvdf_or_vtkDict) == str:
-        rr, ff, ee = pvdGetDataFileRoot_Prefix_and_Ext(pvdf_or_vtkDict)
-        pvdf_or_vtkDict = readPVD(pvdf_or_vtkDict)
+    """
+    Add time to field data.
+
+    Args:
+        pvdf_or_vtkDict (Union[str, Dict[Union[str, float], vtk.vtkDataObject]]): The PVD file path or dictionary of VTK data objects.
+
+    Returns:
+        Union[str, Dict[Union[str, float], vtk.vtkDataObject]]: The PVD file path or dictionary of VTK data objects.
+    """
+    rr, ff, ee = pvdGetDataFileRoot_Prefix_and_Ext(pvdf_or_vtkDict)
+    pvdf_or_vtkDict = readPVD(pvdf_or_vtkDict)
     for iTime in sorted(pvdf_or_vtkDict.keys()):
         timeArray = vtk.vtkFloatArray()
         timeArray.SetNumberOfValues(1)
@@ -854,6 +916,14 @@ def pvdAddTimeToFieldData(pvdf_or_vtkDict: Union[str, Dict[Union[str, float], vt
 
 
 def writeZipFromVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], fileExt: str, zipFileOut: str) -> None:
+    """
+    Write a ZIP file from a dictionary of VTK data objects.
+
+    Args:
+        vtkDict (Dict[Union[str, float], vtk.vtkDataObject]): The dictionary of VTK data objects.
+        fileExt (str): The file extension.
+        zipFileOut (str): The output ZIP file path.
+    """
     # first save times to field data
     pvdAddTimeToFieldData(vtkDict)
     # write as normal, then zip, then del.
@@ -867,14 +937,17 @@ def writeZipFromVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], 
 
 
 def deleteFilesByPVD(pvdFile: str, FILE_ONLY: bool = False, QUIET: bool = False) -> int:
-    '''
-    Will Read pvdFile - delete all files from hard drive that pvd refs
-        Then delete pvdFile
-    :param pvdFile:
-    :param FILE_ONLY:
-    :param QUIET:
-    :return:
-    '''
+    """
+    Delete files referenced by a PVD file.
+
+    Args:
+        pvdFile (str): The PVD file path.
+        FILE_ONLY (bool, optional): Whether to delete only the files. Defaults to False.
+        QUIET (bool, optional): Whether to suppress warnings. Defaults to False.
+
+    Returns:
+        int: 0 if successful, 1 if error.
+    """
     if FILE_ONLY:
         try:
             os.remove(pvdFile)
@@ -932,6 +1005,16 @@ def readPVDFileName(fileIn: str, vtpTime: float = 0.0, timeIDs: List[int] = [], 
         return vtkDict
 
 def readPVD(fileIn: str, timeIDs: List[int] = []) -> Dict[float, vtk.vtkDataObject]:
+    """
+    Read a PVD file and return a dictionary of VTK data objects.
+
+    Args:
+        fileIn (str): The PVD file path.
+        timeIDs (List[int], optional): A list of time step IDs to include. Defaults to an empty list.
+
+    Returns:
+        Dict[float, vtk.vtkDataObject]: A dictionary of VTK data objects (keys = time).
+    """
     return readPVDFileName(fileIn, timeIDs=timeIDs, RETURN_OBJECTS_DICT=True)
 
 def pvdGetDict(pvd: Union[str, ET.Element, Dict[float, str]], timeIDs: List[int] = []) -> Dict[float, str]:

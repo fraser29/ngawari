@@ -132,7 +132,7 @@ def areVecsMatching(v1, v2, angleTol_rad, magTol):
     return True
 
 
-def forceptsnp(pts):
+def __forcePts_nx3(pts):
     pts = np.array(pts)
     dims = pts.shape
     if len(dims) == 1:
@@ -171,7 +171,7 @@ def fitPlaneToPoints(pts):
     Returns:
     - planeABC: Coefficients of the plane equation [a, b, c, d].
     """
-    pts = ensurePtsNx3(pts)
+    pts = __forcePts_nx3(pts)
     A = pts - np.mean(pts, 0)
     _, S, V = np.linalg.svd(A)
     i = np.argmin(S)  # find position of minimal singular value
@@ -215,7 +215,7 @@ def projectPtsToPlane(pts, plane):
     else:
         planeNorm = plane[:3]
         D = plane[3]
-    pts = forceptsnp(pts)
+    pts = __forcePts_nx3(pts)
     fraction = (planeNorm[0] * pts[:, 0] +
                 planeNorm[1] * pts[:, 1] +
                 planeNorm[2] * pts[:, 2] + D) / \
@@ -253,7 +253,7 @@ def project3DPointsToPlanarCoordinateSystem_OLD(pts, planeNorm=None):
     :param planeNorm:
     :return:
     """
-    pts = forceptsnp(pts)
+    pts = __forcePts_nx3(pts)
     npts, _ = pts.shape
     try:
         len(planeNorm)
@@ -275,7 +275,7 @@ def project3DPointsToPlanarCoordinateSystem_OLD(pts, planeNorm=None):
 
 def project3DPointsToPlanarCoordinateSystem2(pts, planeNorm=None, datumPt=None):
     # https://stackoverflow.com/questions/26369618/getting-local-2d-coordinates-of-vertices-of-a-planar-polygon-in-3d-space
-    pts = forceptsnp(pts)
+    pts = __forcePts_nx3(pts)
     npts, _ = pts.shape
     if planeNorm is None:
         planeNorm = fitPlaneToPoints(pts)[:3]
@@ -601,7 +601,7 @@ def vecFromPtToLine(pt, ptOnLine, lineNorm):
 
 def fcdot(u, v):
     """ dot product of two lists of vecs"""
-    u, v = ensurePtsNx3(u), ensurePtsNx3(v)
+    u, v = __forcePts_nx3(u), __forcePts_nx3(v)
     return np.array([np.dot(i, j) for i, j in zip(u, v)])
 
 
@@ -853,7 +853,7 @@ def reorderPointsStartClosestToX(pts, X):
 
 
 def reorderPointsStatingAti(pts, i):
-    pts = ensurePtsNx3(pts)
+    pts = __forcePts_nx3(pts)
     ptsOut = np.vstack((pts[i:][:], pts[:i][:]))
     return ptsOut
 
@@ -895,7 +895,7 @@ def cumulativeDistanceAlongLine(xyzPts):
         dists = [np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) for
                  p2, p1 in zip(xyzPts[:-1], xyzPts[1:])]
     else:
-        xyzPts = ensurePtsNx3(xyzPts)
+        xyzPts = __forcePts_nx3(xyzPts)
         dists = [np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2) for
                  p2, p1 in zip(xyzPts[:-1], xyzPts[1:])]
     dists.insert(0, 0.0)
@@ -1084,9 +1084,25 @@ def fitCircle3D(x, y, z, xm, ym, zm, rm):
     return (centerPointArr, RiF, np.cross(sArr, rArr))
 
 
-def lagBetweenTwoCurves(y1, y2, timeArray=None):
+def lagBetweenTwoCurves(y1: np.array, y2: np.array, timeArray: np.array = None):
     """
+    Calculate the lag (delay) between two similar time series curves.
 
+    This function uses cross-correlation to determine the time delay between two signals.
+
+    Parameters:
+    - y1 (np.array): First time series.
+    - y2 (np.array): Second time series.
+    - timeArray (np.array, optional): Array of time points corresponding to y1 and y2. 
+      If None, a normalized time array from -0.5 to 0.5 is used. Default is None.
+
+    Returns:
+    - float: The time delay between the two signals. A positive value indicates 
+             that y2 lags behind y1, while a negative value indicates that y1 lags behind y2.
+
+    Note:
+    - The two input arrays (y1 and y2) must have the same length.
+    - If timeArray is provided, it must have the same length as y1 and y2.
     """
     n = len(y1)
     corr = np.correlate(y2, y1, mode='same') / np.sqrt(np.correlate(y1, y1, mode='same')[int(n/2)] * np.correlate(y2, y2, mode='same')[int(n/2)])
@@ -1114,15 +1130,9 @@ def getPlaneConstantsFromPointAndVector(pt, vector):
     return plane
 
 
-def ensurePtsNx3(pts):
+def calculateDerivativeOnLine_backwardDiff(pim1, pi, dt):
+    """ Calculate the derivative of a line using backward difference. 
     """
-     Take in points. Ensure np.array and orientated nx3
-    """
-    return forceptsnp(pts)
-
-
-def calculateUpwindDerivativeOnLine(pim1, pi, dt):
-    # not sure why called upwind (is backward diff)
     dr_dt = [(m - n) / dt for m, n in zip(pim1, pi)]
     return dr_dt
 
@@ -1141,7 +1151,7 @@ def __calcTNB(dr_dt, d2r_dt2):
 
 
 def calculateCurvature3Pts(pim1, pi, pip1, dx):
-    dr_dt = calculateUpwindDerivativeOnLine(pim1, pi, dx)
+    dr_dt = calculateDerivativeOnLine_backwardDiff(pim1, pi, dx)
     d2r_dt2 = calculateSecondDerivativeOnLine(pim1, pi, pip1, dx)
     num = np.linalg.norm(np.cross(dr_dt, d2r_dt2))
     denom = np.power(np.linalg.norm(dr_dt), 3)
@@ -1150,7 +1160,7 @@ def calculateCurvature3Pts(pim1, pi, pip1, dx):
     return (k, TNB)
 
 
-def calculateCurvature_D(gf, ggf, dx):
+def calculateCurvature_D(gf: np.array, ggf: np.array):
     num = [np.linalg.norm(np.cross(i, j)) for i, j in zip(gf, ggf)]
     denom = [np.power(np.linalg.norm(i), 3) for i in gf]
     k = np.array(num) / np.array(denom)
@@ -1158,18 +1168,10 @@ def calculateCurvature_D(gf, ggf, dx):
     return (k, TNB)
 
 
-def fitLineToPoints3D(pts):
-    # Calculate the mean of the points, i.e. the 'center' of the cloud
-    pts_mean = pts.mean(axis=0)
-    # Do an SVD on the mean-centered data.
-    _, _, vv = np.linalg.svd(pts - pts_mean)
-    return vv[0]
-
-
 def setVectorDirection(vecIn, oo, pointMorePositive):
     """ Will ensure vector at point oo is pointing towards 'pointMorePositive' else flip"""
     oo, vecIn = np.asarray(oo), np.asarray(vecIn)
-    dp, dm = distBetweenTwoPts(oo + vecIn, pointMorePositive), distBetweenTwoPts(oo - vecIn, pointMorePositive)
+    dp, dm = distTwoPoints(oo + vecIn, pointMorePositive), distTwoPoints(oo - vecIn, pointMorePositive)
     if dp > dm:
         return -1 * vecIn
     return vecIn
@@ -1190,7 +1192,7 @@ def buildRotationMatrix(vec, theta_rad):
 
 
 def adjustPointsCenterOfMassToOrigin(pts):
-    pts = ensurePtsNx3(pts)
+    pts = __forcePts_nx3(pts)
     centerOfMass = np.mean(pts, 0)
     return pts - centerOfMass
 
@@ -1208,6 +1210,7 @@ def areVecsConsistent(vecA, vecB):
         return False
     return True
 
+
 def setVecAConsitentWithVecB(vecA, vecB):
     """
      Make vec dir consistant with poly order
@@ -1215,6 +1218,7 @@ def setVecAConsitentWithVecB(vecA, vecB):
     if not areVecsConsistent(vecA, vecB):
         vecA = -1.0 * vecA
     return vecA
+
 
 def buildConvexHUll3D(xyz, nPts=25, planeABCD=None, TO_SPLINE=True):
     try:
@@ -1232,6 +1236,7 @@ def buildConvexHUll3D(xyz, nPts=25, planeABCD=None, TO_SPLINE=True):
     chxyz = convert2DPointsTo3DCoordinateSystem(chxys, e1, e2, origin)
     return np.asarray(chxyz)
 
+
 def orderPointsConvexHull_IDs(xyz):
     planeABCD = fitPlaneToPoints(xyz)
     xy, e1, e2, origin = project3DPointsToPlanarCoordinateSystem(xyz, planeABCD[:3])
@@ -1243,11 +1248,7 @@ def orderPointsConvexHull_IDs(xyz):
         iID = np.argmin(dd)
         IDs.append(iID)
     return IDs
-    # print(xyz)
-    # print(xy)
-    # print(chxy)
-    # print(IDs)
-    # print('-'*50)
+
 
 def orderPointsConvexHull(xyz):
     IDs = orderPointsConvexHull_IDs(xyz)
@@ -1266,7 +1267,7 @@ def groupContinuousLinesByTol(ptsIn, tol):
     currPts = [pi]
     pts = np.delete(pts, 0, 0)
     while len(pts) > 0:
-        dd = distBetweenPtAndListPts(pi, pts)
+        dd = distPointPoints(pi, pts)
         nextId = np.argmin(dd)
         if dd[nextId] < tol:
             pi = pts[nextId, :]
@@ -1290,7 +1291,7 @@ def buildContinuousLineByClosestPt(ptsIn):
     currPts = [pi]
     pts = np.delete(pts, 0, 0)
     while len(pts) > 0:
-        dd = distBetweenPtAndListPts(pi, pts)
+        dd = distPointPoints(pi, pts)
         nextId = np.argmin(dd)
         pi = pts[nextId, :]
         currPts.append(pi)
@@ -1322,6 +1323,7 @@ def interpolateNANsFromSurroundingValues_cubic(nparray):
     values = [nparray[i, j] for i, j in zip(gridX.flatten(), gridY.flatten()) if not arrayTF[i, j]]
     return interpolate.griddata(pp, values, (gridX, gridY), method='cubic')
 
+
 # ============ LINE SEG PIERCE TRIANGLE ========================================
 def doesLineSegPierceTriangle(lineP0, lineP1, triP0, triP1, triP2):
     if doesLinePierceTriangle(lineP0, lineP1, triP0, triP1, triP2):
@@ -1334,6 +1336,7 @@ def doesLineSegPierceTriangle(lineP0, lineP1, triP0, triP1, triP2):
             return True
     return False
 
+
 def doesLinePierceTriangle(lineP0, lineP1, triP0, triP1, triP2):
     s1 = pluckerSideOperator([lineP0, lineP1], [triP0, triP1])
     s3 = pluckerSideOperator([lineP0, lineP1], [triP1, triP2])
@@ -1344,6 +1347,7 @@ def doesLinePierceTriangle(lineP0, lineP1, triP0, triP1, triP2):
         return True
 
     return False
+
 
 def pluckerSideOperator(line0, line1):
     a = pluckerLine(line0)
@@ -1361,6 +1365,7 @@ def pluckerLine(line):
     L5 = line[1][1] - line[0][1]
     return [L0, L1, L2, L3, L4, L5]
 
+
 def doesVectorPierceAnyTriangle(vS, vE, triPolyData):
     nTris = triPolyData.GetNumberOfCells()
     for k2 in range(nTris):
@@ -1371,6 +1376,8 @@ def doesVectorPierceAnyTriangle(vS, vE, triPolyData):
         if doesLineSegPierceTriangle(vS, vE, t0, t1, t2):
             return k2
     return None
+
+
 # ==========================================================================
 # ==========================================================================
 def calculateBSA(height_cm, weight_kg, METHOD='DuBois'):
@@ -1380,25 +1387,16 @@ def calculateBSA(height_cm, weight_kg, METHOD='DuBois'):
         raise ValueError('Method unknown. Use one of: {DuBois}')
     return BSA
 
+
 # ==========================================================================
 # RANDOM CLASSES
 # ==========================================================================
-def nan_helper(y):
-    """Helper to handle indices and logical indices of NaNs.
-
-    Input:
-        - y, 1d numpy array with possible NaNs
-    Output:
-        - nans, logical indices of NaNs
-        - index, a function, with signature indices= index(logical_indices),
-          to convert logical indices of NaNs to 'equivalent' indices
-    Example:
-         # linear interpolation of NaNs
-         nans, x= nan_helper(y)
-         y[nans]= np.interp(x(nans), x(~nans), y[~nans])
+def interpolateNANsFromSurroundingValues_linear(array):
+    """ This is linear temporal interpolation
     """
-
-    return np.isnan(y), lambda z: z.nonzero()[0]
+    mask = np.isnan(array)
+    array[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), array[~mask])
+    return array
 
 
 ######################################################################
@@ -1421,6 +1419,7 @@ def _myDet(p, q, r):
     sum2 = q[0] * p[1] + r[0] * q[1] + p[0] * r[1]
     return sum1 - sum2
 
+
 def _isRightTurn(pqr):
     """Do the vectors pq:qr form a right turn, or not?"""
     (p, q, r) = pqr
@@ -1429,6 +1428,7 @@ def _isRightTurn(pqr):
         return 1
     else:
         return 0
+
 
 def _isPointInPolygon(r, P):
     """Is point r inside a given polygon P?"""
@@ -1439,8 +1439,7 @@ def _isPointInPolygon(r, P):
             return 0  # Out!
     return 1  # It's within!
 
-######################################################################
-######################################################################
+
 def convexHull(P):
     """Calculate the convex hull of a set of points."""
     # Remove any duplicates
@@ -1509,7 +1508,3 @@ class RunningStats:
     def standard_deviation(self):
         return np.sqrt(self.variance())
 
-def flowRate_syntheticAo(timeArray, Qmax, t_at_Max, sigma=0.07, freq=0.016, phi=0.05):
-    Q = Qmax * np.exp(-1.0 * (timeArray-t_at_Max)**2.0 / (2.0*sigma**2.0)) * np.cos(2.0 * np.pi * freq * timeArray + phi)
-    Q += np.random.normal(0, 5, Q.shape)
-    return timeArray, Q
