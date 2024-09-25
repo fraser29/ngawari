@@ -1,7 +1,6 @@
-'''    
-
+"""
 @author Fraser Callaghan
-'''
+"""
 
 import numpy as np
 import itertools
@@ -829,7 +828,20 @@ def ensureClosedPolyIsClockwise(xzyIn, refVec):
     return xzyIn[::-1]
 
 def setFirstPtOfPolygon(xyzIn, refVec):
-    # Assume 2D and make first pt that closest to 12oclock
+    """
+    Reorder the points of a polygon so that the first point is closest to the refVec (e.g. '12 o'clock' position).
+
+    This function assumes the polygon is planar and reorders the points so that the first point
+    is the one closest to the end of a vector starting from the polygon's center point
+    and pointing in the direction of the reference vector.
+
+    Parameters:
+    xyzIn (array-like): Input points of the polygon.
+    refVec (array-like): Reference vector indicating the '12 o'clock' direction.
+
+    Returns:
+    numpy.ndarray: Reordered points of the polygon.
+    """
     pts = np.array(xyzIn)
     refVec = np.array(refVec)
     nPts = len(pts)
@@ -837,11 +849,9 @@ def setFirstPtOfPolygon(xyzIn, refVec):
     meanDiameter = getPolygonMeanDiameter(xyzIn)
     vectorEnd = cp + meanDiameter / 1.0 * refVec
     closestPtIndex = 0
-    # ptToLineDist = distancePointToLineSegPerpendicular(cp, vectorEnd, pts[0])
-    ptToLineDist = distBetweenTwoPts(vectorEnd, pts[0])
+    ptToLineDist = distTwoPoints(vectorEnd, pts[0])
     for i in range(1, nPts, 1):
-        # iDist = distancePointToLineSegPerpendicular(cp, vectorEnd, pts[i])
-        iDist = distBetweenTwoPts(vectorEnd, pts[i])
+        iDist = distTwoPoints(vectorEnd, pts[i])
         if (iDist < ptToLineDist):
             closestPtIndex, ptToLineDist = i, iDist
     return reorderPointsStatingAti(pts, closestPtIndex)
@@ -903,7 +913,7 @@ def cumulativeDistanceAlongLine(xyzPts):
 
 
 def getIdOfPointClosestToX(X, xyz):
-    diffs = distBetweenPtAndListPts(X, xyz)
+    diffs = distTwoPoints(X, xyz)
     return np.argmin(diffs)
 
 
@@ -913,7 +923,7 @@ def getPolygonMeanRadius(xyzIn, EXCLUDE_CENTER=True):
     cp = np.mean(pts, 0)
     allR = []
     for i in range(nPts):
-        allR.append(distBetweenTwoPts(cp, pts[i]))
+        allR.append(distPointPoints(cp, pts[i]))
     if EXCLUDE_CENTER:
         allR = sorted(allR)
         return np.mean(allR[1:])
@@ -1472,39 +1482,3 @@ def convexHull(P):
 
 ######################################################################
 ######################################################################
-class RunningStats:
-    """
-    Add (push) a new number to class - get stats
-    """
-    def __init__(self):
-        self.n = 0
-        self.old_m = 0
-        self.new_m = 0
-        self.old_s = 0
-        self.new_s = 0
-
-    def clear(self):
-        self.n = 0
-
-    def push(self, x):
-        self.n += 1
-
-        if self.n == 1:
-            self.old_m = self.new_m = x
-            self.old_s = 0
-        else:
-            self.new_m = self.old_m + (x - self.old_m) / self.n
-            self.new_s = self.old_s + (x - self.old_m) * (x - self.new_m)
-
-            self.old_m = self.new_m
-            self.old_s = self.new_s
-
-    def mean(self):
-        return self.new_m if self.n else 0.0
-
-    def variance(self):
-        return self.new_s / (self.n - 1) if self.n > 1 else 0.0
-
-    def standard_deviation(self):
-        return np.sqrt(self.variance())
-
