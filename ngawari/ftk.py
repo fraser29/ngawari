@@ -7,6 +7,7 @@ import itertools
 from scipy import stats
 from scipy import optimize, interpolate
 from scipy.spatial import cKDTree
+import vtk
 
 
 # ======================================================================================================================
@@ -103,18 +104,9 @@ def angleBetween2Vec(v1, v2, RETURN_DEGREES=False):
     :param RETURN_DEGREES:
     :return: angle in radians
     """
-    v1, v2 = np.asarray(v1), np.asarray(v2)
-    if v1.ndim == 1:
-        v1 = v1[np.newaxis, :]
-        v2 = v2[np.newaxis, :]
-    
-    v1_u = v1 / np.linalg.norm(v1, axis=1)[:, np.newaxis]
-    v2_u = v2 / np.linalg.norm(v2, axis=1)[:, np.newaxis]
-    
-    tt = np.einsum('ij,ij->i', v1_u, v2_u)
-    ANGLE = np.arccos(np.clip(tt, -1, 1))
-    
-    return np.degrees(ANGLE) if RETURN_DEGREES else ANGLE
+    if RETURN_DEGREES:
+        return vtk.vtkMath.DegreesFromRadians(angleBetween2Vec(v1, v2, RETURN_DEGREES=False))
+    return vtk.vtkMath.AngleBetweenVectors(v1, v2)
 
 
 def angleBetweenVecAndPlane(vector, planeNormal):
@@ -502,19 +494,19 @@ def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude
 
 
 # ======================================================================================================================
-def findCylinderAxis(point_cloud):
-    """
-    Finds the main axis of a cylindrical point cloud.
+# def findCylinderAxis(point_cloud):
+#     """
+#     Finds the main axis of a cylindrical point cloud.
     
-    :param point_cloud: Nx3 numpy array where N is the number of points and each row is (x, y, z).
-    :return: A unit vector defining the main axis of the cylinder.
-    """
-    from sklearn.decomposition import PCA
-    point_cloud_centered = point_cloud - np.mean(point_cloud, axis=0)
-    pca = PCA(n_components=3)
-    pca.fit(point_cloud_centered)
-    main_axis = pca.components_[0]
-    return main_axis / np.linalg.norm(main_axis)
+#     :param point_cloud: Nx3 numpy array where N is the number of points and each row is (x, y, z).
+#     :return: A unit vector defining the main axis of the cylinder.
+#     """
+#     from sklearn.decomposition import PCA
+#     point_cloud_centered = point_cloud - np.mean(point_cloud, axis=0)
+#     pca = PCA(n_components=3)
+#     pca.fit(point_cloud_centered)
+#     main_axis = pca.components_[0]
+#     return main_axis / np.linalg.norm(main_axis)
 
 
 # ======================================================================================================================

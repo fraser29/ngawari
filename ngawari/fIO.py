@@ -251,7 +251,7 @@ def __buildFileName(prefix: str, idNumber: int, extn: str, number_of_digits: int
     Returns:
         str: The file name.
     """
-    ids = f'{idNumber:{number_of_digits}d}'
+    ids = f'{idNumber:0{number_of_digits}d}'
     if extn[0] != '.':
         extn = '.' + extn
     fileName = prefix + '_' + ids + extn
@@ -1093,8 +1093,12 @@ def pvdGetDataFileRoot_Prefix_and_Ext(pvd: Union[str, ET.Element, Dict[float, st
     """
     h, t = os.path.split(pvd)
     t = os.path.splitext(t)[0]
-    ff = pvdGetFileAtT(pvd, 0)
-    return h, t, os.path.splitext(ff)[1]
+    try:
+        ff = pvdGetFileAtT(pvd, 0)
+        ext = os.path.splitext(ff)[1]
+    except FileNotFoundError:
+        ext = None
+    return h, t, ext
 
 def pvdGetDataClosestTo(pvd: Union[str, ET.Element, Dict[float, str]], refT: float) -> vtk.vtkDataObject:
     """

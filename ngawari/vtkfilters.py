@@ -9,7 +9,7 @@ import numpy as np
 from typing import List, Dict, Union, Optional, Tuple
 from . import ftk
 
-from ._vtk_numpy_helpers import getArrayAsNumpy, getPtsAsNumpy, getVtkPointsAsNumpy, getArrayNames, getArray, getScalarsArrayName, getCellArrayNames, getCellArray, getCellArrayAsNumpy, getCellArrayNames, getCellArray, getCellArrayAsNumpy
+from ngawari._vtk_numpy_helpers import *
 
 # ======================================================================================================================
 #           VTK TYPE CHECKERS
@@ -531,12 +531,9 @@ def getVtsResolution(dataVts):
     dataVts.GetPoint(i0+1,j0,k0, p1)
     dataVts.GetPoint(i0,j0+1,k0, p2)
     dataVts.GetPoint(i0,j0,k0+1, p3)
-    # dk = abs(ftk.distBetweenTwoPts(p1, o))
-    # dj = abs(ftk.distBetweenTwoPts(p2, o))
-    # di = abs(ftk.distBetweenTwoPts(p3, o))
-    di = abs(ftk.distBetweenTwoPts(p1, o))
-    dj = abs(ftk.distBetweenTwoPts(p2, o))
-    dk = abs(ftk.distBetweenTwoPts(p3, o))
+    di = abs(ftk.distTwoPoints(p1, o))
+    dj = abs(ftk.distTwoPoints(p2, o))
+    dk = abs(ftk.distTwoPoints(p3, o))
     return [di, dj, dk]
 
 def getResolution_VTI(data):
@@ -583,9 +580,9 @@ def getDimsResOriginFromOutline(outline, res, pad):
     except TypeError:
         di, dj, dk = res, res, res
     origin = outline.GetPoints().GetPoint(0)
-    DI = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(1))
-    DJ = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(2))
-    DK = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(4))
+    DI = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(1))
+    DJ = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(2))
+    DK = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(4))
     nR, nC, nK = int(DI/di)+1+pad, int(DJ/dj)+1+pad, int(DK/dk)+1+pad
     return [nR,nC,nK], [di,dj,dk], [i-j*pad/2 for i,j in zip(origin,[di,dj,dk])]
 
@@ -598,9 +595,9 @@ def buildRawImageDataFromOutline(outline, res, pad=1):
 
 def buildRawImageDataFromOutline_dims(outline, dims):
     origin = outline.GetPoints().GetPoint(0)
-    DI = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(1))
-    DJ = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(2))
-    DK = ftk.distBetweenTwoPts(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(4))
+    DI = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(1))
+    DJ = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(2))
+    DK = ftk.distTwoPoints(outline.GetPoints().GetPoint(0), outline.GetPoints().GetPoint(4))
     di = DI / dims[0]
     dj = DJ / dims[1]
     dk = DK / dims[2]
@@ -781,8 +778,8 @@ def filterVtpSpline(data, spacing=0.001, nPoints=None, smoothFactor=None):
     sf.Update()
     cl1 = sf.GetOutput()
     cl1 = cleanData(cl1, 0.05 * spacing)
-    d0 = ftk.distBetweenTwoPts(p0, cl1.GetPoints().GetPoint(0))
-    d1 = ftk.distBetweenTwoPts(p0, cl1.GetPoints().GetPoint(cl1.GetNumberOfPoints() - 1))
+    d0 = ftk.distTwoPoints(p0, cl1.GetPoints().GetPoint(0))
+    d1 = ftk.distTwoPoints(p0, cl1.GetPoints().GetPoint(cl1.GetNumberOfPoints() - 1))
     if d1 < d0:
         xyz = getPtsAsNumpy(cl1)
         cl1 = buildPolyLineFromXYZ(xyz[::-1])
@@ -840,7 +837,7 @@ def getMaximumBounds(data):
     pts = getPtsAsNumpy(oo)
     for k1 in range(len(pts)):
         for k2 in range(k1+1, len(pts)):
-            dx = ftk.distBetweenTwoPts(pts[k1], pts[k2])
+            dx = ftk.distTwoPoints(pts[k1], pts[k2])
             if dx > dd:
                 dd = dx
     return dd
@@ -940,7 +937,7 @@ def delCellsByEdgeLength(data, edgeLength):
         for k1 in range(data.GetCell(k0).GetNumberOfEdges()):
             p0 = data.GetCell(k0).GetEdge(k1).GetPoints().GetPoint(0)
             p1 = data.GetCell(k0).GetEdge(k1).GetPoints().GetPoint(1)
-            if ftk.distBetweenTwoPts(p0, p1) > edgeLength:
+            if ftk.distTwoPoints(p0, p1) > edgeLength:
                 allIds.remove(k0)
                 break
     #
@@ -1299,9 +1296,12 @@ def filterResampleDictToDataset(srcDict, destData):
         dictOut[iK] = filterResampleToDataset(srcDict[iK], destData)
     return dictOut
 
-def filterResampleToImage(vtsObj, dims, bounder=None):
+def filterResampleToImage(vtsObj, dims=None, bounder=None):
     rif = vtk.vtkResampleToImage()
     rif.SetInputDataObject(vtsObj)
+    if dims is None:
+        dims = [0,0,0]
+        vtsObj.GetDimensions(dims)
     try:
         _ = dims[0]
     except TypeError:
