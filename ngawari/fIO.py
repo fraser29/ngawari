@@ -192,7 +192,6 @@ class NumpyEncoder(json.JSONEncoder):
 
 def writeDictionaryToJSON(fileName: str, dictToWrite: Dict[str, str]) -> str:
     with open(fileName, 'w') as fp:
-        # json.dump(dictToWrite, fp, indent=4, cls=NumpyEncoder, ensure_ascii=False)
         json.dump(dictToWrite, fp, indent=4, sort_keys=True, cls=NumpyEncoder, ensure_ascii=False)
     return fileName
 
@@ -409,7 +408,7 @@ def checkIfExtnPresent(fileName: str, extn: str) -> str:
 ##          CSV interface
 # =========================================================================
 
-def readDataCsv(csvFile: str, nHeaderLines: int = 0, quotechar: str = '"', decimalChar: str = ".", delimeterToUse: Optional[str] = None) -> Tuple[List[str], List[List[str]]]:
+def readDataCSV(csvFile: str, nHeaderLines: int = 0, quotechar: str = '"', decimalChar: str = ".", delimeterToUse: Optional[str] = None) -> Tuple[List[str], List[List[str]]]:
     """
     Read data from a CSV file.
 
@@ -472,7 +471,7 @@ def readDataCsv(csvFile: str, nHeaderLines: int = 0, quotechar: str = '"', decim
     return headers, rowsList
 
 
-def writeCsvFile(data: List[List[str]], header: List[str], csvFile: str, FIX_NAN: bool = False) -> str:
+def writeCSVFile(data: List[List[str]], header: List[str], csvFile: str, FIX_NAN: bool = False) -> str:
     """
     Write data to a CSV file.
 
@@ -600,7 +599,7 @@ def writePlyFile(fullfileName: str, xyzPoints: List[List[float]], uvwPoints: Opt
 # =========================================================================
 ## vtkIO and PVD interface
 # =========================================================================
-def writeVtkFile(data: vtk.vtkDataObject, fileName: str, STL_ASCII: bool = False) -> str:
+def writeVTKFile(data: vtk.vtkDataObject, fileName: str, STL_ASCII: bool = False) -> str:
     """
     Writes a VTK object to a file. Uses the extension to determine the type of file to write.
 
@@ -766,7 +765,7 @@ def _writePVD(rootDirectory: str, filePrefix: str, outputSummary: Dict[int, Dict
     return fileOut
 
 
-def _makePvdOutputDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], filePrefix: str, fileExtn: str, subDir: str = '') -> Dict[int, Dict[str, Union[str, float]]]:
+def _makePVDOutputDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], filePrefix: str, fileExtn: str, subDir: str = '') -> Dict[int, Dict[str, Union[str, float]]]:
     """
     Make a PVD output dictionary. For internal use only.
 
@@ -789,7 +788,7 @@ def _makePvdOutputDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], file
         outputSummary[timeId] = outputMeta
     return outputSummary
 
-def __writePvdData(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir: str, filePrefix: str, fileExtn: str, subDir: str = '') -> None:
+def __writePVDData(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir: str, filePrefix: str, fileExtn: str, subDir: str = '') -> None:
     """
     Write PVD data. For internal use only.
 
@@ -808,9 +807,9 @@ def __writePvdData(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir:
         if type(vtkDict[myKeys[timeId]]) == str:
             os.rename(vtkDict[myKeys[timeId]], fileOut)
         else:
-            writeVtkFile(vtkDict[myKeys[timeId]], fileOut)
+            writeVTKFile(vtkDict[myKeys[timeId]], fileOut)
 
-def writeVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir: str, filePrefix: str, fileExtn: str, BUILD_SUBDIR: bool = True) -> str:
+def writeVTK_PVD_Dict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir: str, filePrefix: str, fileExtn: str, BUILD_SUBDIR: bool = True) -> str:
     """
     Write dict of time:vtkObj to pvd file
         If dict is time:fileName then will copy files
@@ -834,8 +833,8 @@ def writeVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], rootDir
         subDir = filePrefix
         if not os.path.isdir(os.path.join(rootDir, subDir)):
             os.mkdir(os.path.join(rootDir, subDir))
-    outputSummary = _makePvdOutputDict(vtkDict, filePrefix, fileExtn, subDir)
-    __writePvdData(vtkDict, rootDir, filePrefix, fileExtn, subDir)
+    outputSummary = _makePVDOutputDict(vtkDict, filePrefix, fileExtn, subDir)
+    __writePVDData(vtkDict, rootDir, filePrefix, fileExtn, subDir)
     return _writePVD(rootDir, filePrefix, outputSummary)
 
 
@@ -858,13 +857,13 @@ def pvdAddTimeToFieldData(pvdf_or_vtkDict: Union[str, Dict[Union[str, float], vt
         timeArray.SetName("Time")
         pvdf_or_vtkDict[iTime].GetFieldData().AddArray(timeArray)
     if rr is not None:
-        return writeVtkPvdDict(pvdf_or_vtkDict, rr, ff, ee)
+        return writeVTK_PVD_Dict(pvdf_or_vtkDict, rr, ff, ee)
     else:
         return pvdf_or_vtkDict
 
 
 
-def writeZipFromVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], fileExt: str, zipFileOut: str) -> None:
+def writeZipFromVTK_PVD_Dict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], fileExt: str, zipFileOut: str) -> None:
     """
     Write a ZIP file from a dictionary of VTK data objects.
 
@@ -878,7 +877,7 @@ def writeZipFromVtkPvdDict(vtkDict: Dict[Union[str, float], vtk.vtkDataObject], 
     # write as normal, then zip, then del.
     r, f = os.path.split(zipFileOut)
     f = os.path.splitext(f)[0]
-    pvdOut = writeVtkPvdDict(vtkDict, r, f, fileExt)
+    pvdOut = writeVTK_PVD_Dict(vtkDict, r, f, fileExt)
     if zipFileOut[-4:] == '.zip':
         zipFileOut = zipFileOut[:-4]
     shutil.make_archive(zipFileOut, 'zip', os.path.join(r, f))
@@ -1093,7 +1092,10 @@ def pvdGetDataFileRoot_Prefix_and_Ext(pvd: Union[str, ET.Element, Dict[float, st
     """
     h, t = os.path.split(pvd)
     t = os.path.splitext(t)[0]
-    ff = pvdGetFileAtT(pvd, 0)
+    try:
+        ff = pvdGetFileAtT(pvd, 0)
+    except FileNotFoundError:
+        ff = pvd
     return h, t, os.path.splitext(ff)[1]
 
 def pvdGetDataClosestTo(pvd: Union[str, ET.Element, Dict[float, str]], refT: float) -> vtk.vtkDataObject:
@@ -1196,7 +1198,7 @@ def pvdReverse(pvdFileIn: str, suffix: str = "REV", outfile: Optional[str] = Non
         outR, outP = os.path.split(outfile)
         outP = os.path.splitext(outP)[0]
         deleteFilesByPVD(pvdFileOut,FILE_ONLY=True)
-        pvdFileOut = writeVtkPvdDict(pvdD, outR, outP, e, True)
+        pvdFileOut = writeVTK_PVD_Dict(pvdD, outR, outP, e, True)
     return pvdFileOut
 
 def pvdRestart_t(pvdFile: str, timeStart: float, outputFile: Optional[str] = None) -> str:
@@ -1383,7 +1385,7 @@ def pvdAddStartPointAtEndForPeriodicy(pvdFile: str, pvdFileOut: str) -> str:
     pvdTree.write(pvdFileOut, 'UTF-8', xml_declaration=True)
     return pvdFileOut
 
-def buildPvdWaterFallRestarts(pvdFileIn: str, pvdFileOut: str, restartEvery: int, nCycle: int = 1, TO_REV: bool = False) -> List[str]:
+def buildPVD_WaterFallRestarts(pvdFileIn: str, pvdFileOut: str, restartEvery: int, nCycle: int = 1, TO_REV: bool = False) -> List[str]:
     """
     Build a waterfall of restarted PVD files.
 
