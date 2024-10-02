@@ -1628,11 +1628,6 @@ def extractVOI_fromFov(data, fovData):
     return extractVOI(data, tijk)
 
 
-
-
-
-
-
 def filterResampleToDataset(src, destData, PASS_POINTS=False):
     """
     Resample data from src onto destData
@@ -1679,8 +1674,32 @@ def filterResampleToImage(vtsObj, dims=None, bounder=None):
     return rif.GetOutput()
 
 
-
-
+def getAxesDirectionCosinesForNormal(normalVector, guidingVector=None):
+    """
+    A good option is to set guidingVec to None for first and then to u for all others
+    :param normalVector:
+    :param guidingVector:
+    :return:
+    """
+    if guidingVector is None:
+        if (abs(normalVector[0]) >= abs(normalVector[1])):
+            factor = 1.0 / np.sqrt(normalVector[0] * normalVector[0] + normalVector[2] * normalVector[2])
+            u0 = -normalVector[2] * factor
+            u1 = 0.0
+            u2 = normalVector[0] * factor
+        else:
+            factor = 1.0 / np.sqrt(normalVector[1] * normalVector[1] + normalVector[2] * normalVector[2])
+            u0 = 0.0
+            u1 = normalVector[2] * factor
+            u2 = -normalVector[1] * factor
+        u = np.array([u0, u1, u2])
+    else:
+        u = ftk.getVectorComponentNormalToRefVec(guidingVector, normalVector)
+        if np.isnan(u[0]):
+            u = guidingVector
+        u = u / np.linalg.norm(u)
+    v = np.cross(normalVector, u)
+    return u, v, normalVector
 
 
 
@@ -1727,6 +1746,7 @@ def filterResliceImage(vtiObj, X, normalVector, guidingVector=None,
         reslice.SetSlabModeToMax() # default is mean
     reslice.Update()
     return reslice
+
 
 def filterVtiMedian(vtiObj, filterKernalSize=3):
     mf = vtk.vtkImageMedian3D()
