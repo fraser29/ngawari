@@ -9,7 +9,6 @@ import numpy as np
 from typing import List, Dict, Union, Optional, Tuple
 from . import ftk
 
-# from ._vtk_numpy_helpers import *
 
 # ======================================================================================================================
 #           VTK TYPE CHECKERS
