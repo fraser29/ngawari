@@ -250,7 +250,7 @@ def __buildFileName(prefix: str, idNumber: int, extn: str, number_of_digits: int
     Returns:
         str: The file name.
     """
-    ids = f'{idNumber:{number_of_digits}d}'
+    ids = f'{idNumber:0{number_of_digits}d}'
     if extn[0] != '.':
         extn = '.' + extn
     fileName = prefix + '_' + ids + extn

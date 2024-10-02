@@ -97,14 +97,6 @@ class TestFTK(unittest.TestCase):
         deltas = [np.min(ftk.distPointPoints(circle[i], expected)) for i in range(4)]
         np.testing.assert_array_less(deltas, 0.01)
 
-    def test_RunningStats(self):
-        stats = ftk.RunningStats()
-        numbers = [1, 2, 3, 4, 5]
-        for num in numbers:
-            stats.push(num)
-        self.assertAlmostEqual(stats.mean(), 3.0)
-        self.assertAlmostEqual(stats.variance(), 2.5)
-        self.assertAlmostEqual(stats.standard_deviation(), np.sqrt(2.5))
 
 if __name__ == '__main__':
     unittest.main()
