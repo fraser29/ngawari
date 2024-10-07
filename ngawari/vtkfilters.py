@@ -79,7 +79,7 @@ def getArrayAsNumpy(data: vtk.vtkDataObject, arrayName: str, pointData: bool = T
     Returns:
         np.ndarray: The array.
     """
-    array = getArray(data, arrayName, pointData)
+    array = getArray(data, arrayName, pointData=pointData)
     return numpy_support.vtk_to_numpy(array)    
 
 
@@ -150,7 +150,7 @@ def getArrayAsNumpy(data: vtk.vtkDataObject, arrayName: str, RETURN_3D: bool = F
     Returns:
         np.ndarray: The array.
     """
-    A = numpy_support.vtk_to_numpy(getArray(data, arrayName, pointData)).copy()
+    A = numpy_support.vtk_to_numpy(getArray(data, arrayName, pointData=pointData)).copy()
     if RETURN_3D:
         if np.ndim(A) == 2:
             return np.reshape(A, list(data.GetDimensions())+[A.shape[1]], 'F')
@@ -183,7 +183,7 @@ def setArrayFromNumpy(data: vtk.vtkDataObject, npArray: np.ndarray, arrayName: s
         IS_3D (bool): Whether the array is 3D.
         pointData (bool): Whether to add point data arrays [default: True].
     """
-    return addNpArray(data, npArray, arrayName, SET_SCALAR, SET_VECTOR, IS_3D, pointData)
+    return addNpArray(data, npArray, arrayName, SET_SCALAR, SET_VECTOR, IS_3D, pointData=pointData)
     
 def addNpArray(data: vtk.vtkDataObject, npArray: np.ndarray, arrayName: str, SET_SCALAR: bool = False, SET_VECTOR: bool = False, IS_3D: bool = False, pointData: bool = True) -> None:
     """
@@ -198,7 +198,7 @@ def addNpArray(data: vtk.vtkDataObject, npArray: np.ndarray, arrayName: str, SET
         IS_3D (bool): Whether the array is 3D.
         pointData (bool): Whether to add point data arrays [default: True].
     """
-    if getArrayId(data, arrayName, pointData) is not None:
+    if getArrayId(data, arrayName, pointData=pointData) is not None:
         if pointData:
             data.GetPointData().RemoveArray(arrayName)
         else:
@@ -228,15 +228,15 @@ def addNpArray(data: vtk.vtkDataObject, npArray: np.ndarray, arrayName: str, SET
 
 
 def setArrayDtype(data: vtk.vtkDataObject, arrayName: str, dtype: np.dtype, SET_SCALAR: bool = False, pointData: bool = True) -> None:
-    A = getArrayAsNumpy(data, arrayName, pointData)
+    A = getArrayAsNumpy(data, arrayName, pointData=pointData)
     setArrayFromNumpy(data, A.astype(dtype), arrayName, SET_SCALAR=SET_SCALAR, pointData=pointData)
 
 
 def setArrayAsScalars(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) -> None:
     if pointData:
-        data.GetPointData().SetScalars(getArray(data, arrayName, pointData))
+        data.GetPointData().SetScalars(getArray(data, arrayName, pointData=pointData))
     else:
-        data.GetCellData().SetScalars(getArray(data, arrayName, pointData))
+        data.GetCellData().SetScalars(getArray(data, arrayName, pointData=pointData))
 
 
 def ensureScalarsSet(data: vtk.vtkDataObject, possibleName: Optional[str] = None, pointData: bool = True) -> str:
@@ -257,12 +257,12 @@ def ensureScalarsSet(data: vtk.vtkDataObject, possibleName: Optional[str] = None
     try:
         return aS.GetName()
     except AttributeError: # in case no scalars set
-        names = getArrayNames(data, pointData)
+        names = getArrayNames(data, pointData=pointData)
         if possibleName is not None:
             if possibleName in names:
-                setArrayAsScalars(data, possibleName, pointData)
+                setArrayAsScalars(data, possibleName, pointData=pointData)
                 return possibleName
-        setArrayAsScalars(data, names[0], pointData)
+        setArrayAsScalars(data, names[0], pointData=pointData)
         return names[0]
 
 
@@ -295,9 +295,9 @@ def delArraysExcept(data: vtk.vtkDataObject, arrayNamesToKeep_list: List[str], p
     Returns:
         vtk.vtkDataObject: The data object with the specified arrays kept.
     """
-    for ia in getArrayNames(data, pointData):
+    for ia in getArrayNames(data, pointData=pointData):
         if ia not in arrayNamesToKeep_list:
-            delArray(data, ia, pointData)
+            delArray(data, ia, pointData=pointData)
     return data
 
 
