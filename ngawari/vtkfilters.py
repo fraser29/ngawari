@@ -390,6 +390,15 @@ def getVtkPointsAsNumpy(data):
     return numpy_support.vtk_to_numpy(data.GetPoints().GetData())
 
 def getPtsAsNumpy(data):
+    """
+    Get the points as a numpy array.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+
+    Returns:
+        np.ndarray: The points.
+    """
     if isVTI(data):
         return np.array([data.GetPoint(pointID) for pointID in range(data.GetNumberOfPoints())])
     return getVtkPointsAsNumpy(data)
@@ -1008,6 +1017,12 @@ def getVarValueAtI_ImageData(imData, X, arrayName):
     return n
 
 def getImageX(data, pointID):
+    """
+    Get X from image matching pointID. NOTE: opposite: iXID = imData.FindPoint(X)
+    :param data: image data
+    :param pointID: int
+    :return: tuple - the point x,y,z
+    """
     return data.GetPoint(pointID)
 
 def imageX_ToStructuredCoords(imageData, xyz_list):
@@ -1034,6 +1049,14 @@ def imageIndex_ToStructuredCoords(imageData, index_list):
     return [np.unravel_index(i, shape=dd, order='F') for i in index_list]
 
 def getNeighbours26_fromImageIndex(imageData, index, delta=1, RETURN_STRUCTCOORDS=False):
+    """
+    Get the 26 neighbours from an image index
+    :param imageData: image data
+    :param index: int
+    :param delta: int
+    :param RETURN_STRUCTCOORDS: bool
+    :return: list of ints
+    """
     dims = imageData.GetDimensions()
     strucCoord = imageIndex_ToStructuredCoords(imageData, [index])[0]
     newStructCoords = []
