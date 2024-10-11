@@ -1212,6 +1212,25 @@ def translatePoly_AxisA_To_AxisB(polyData, vecA, vecB):
     return filterTransformPolyData(data0R, disp=polyData.GetCenter())
 
 
+def transformImageData(data, matrix, scaleF=[1.0,1.0,1.0]):
+    # Returns vts
+    transMatrix = vtk.vtkTransform()
+    transMatrix.SetMatrix(matrix)
+    tfilterMatrix = vtk.vtkTransformFilter()
+    tfilterMatrix.SetTransform(transMatrix)
+    tfilterMatrix.SetInputData(data)
+    tfilterMatrix.Update()
+    ##
+    transScale = vtk.vtkTransform()
+    transScale.Identity()
+    transScale.Scale(scaleF)
+    tfilterScale = vtk.vtkTransformFilter()
+    tfilterScale.SetTransform(transScale)
+    tfilterScale.SetInputData(tfilterMatrix.GetOutput())
+    tfilterScale.Update()
+    return tfilterScale.GetOutput()
+
+
 def getOutline(dataIn):
     of = vtk.vtkOutlineFilter()
     of.SetInputData(dataIn)
@@ -1505,7 +1524,6 @@ def addNormalVelocities(data, normal, vecArrayName, vecArrayNameOut):
     return data
 
 
-
 def filterDilateErode(imData, kernal, valDilate, valErode):
     # if binary then for dilate set valDilate=1, valErode=0
     #                for erode  set valDilate=0, valErode=1
@@ -1520,8 +1538,6 @@ def filterDilateErode(imData, kernal, valDilate, valErode):
     dilateErode.SetKernelSize(kernal[0], kernal[1], kernal[2])
     dilateErode.Update()
     return dilateErode.GetOutput()
-
-
 
 
 def filterExtractSurface(data):
@@ -1565,6 +1581,19 @@ def __getTriangleCenterAndNormal(triCell):
     normal = [0, 0, 0]
     triCell.ComputeNormal(cellPts.GetPoint(0), cellPts.GetPoint(1), cellPts.GetPoint(2), normal)  # this is mag 1.0
     return (cp, normal)
+
+
+def addNormalsToPolyData(data, REV=False, SPLITTING=True, MANIFOLD=True):
+    normFilter = vtk.vtkPolyDataNormals()
+    normFilter.SetInputData(data)
+    normFilter.SetFeatureAngle(60.0)
+    normFilter.SetNonManifoldTraversal(int(MANIFOLD))
+    normFilter.AutoOrientNormalsOn()
+    normFilter.SetSplitting(int(SPLITTING))
+    if REV:
+        normFilter.FlipNormalsOn()
+    normFilter.Update()
+    return normFilter.GetOutput()
 
 
 # ======================================================================================================================
@@ -1846,6 +1875,14 @@ def filterGetArrayValuesWithinSurface(data, surf3D, arrayName):
     return A[ids2]
 
 
+def getDataWithThreshold(data, thresholdArrayName, thresholdLower, thresholdUpper):
+    thresholder = vtk.vtkThreshold()
+    thresholder.SetInputData(data)
+    thresholder.SetLowerThreshold(thresholdLower)
+    thresholder.SetUpperThreshold(thresholdUpper)
+    thresholder.SetInputArrayToProcess(0, 0, 0, 0, thresholdArrayName)
+    thresholder.Update()
+    return thresholder.GetOutput()
 
 
 
