@@ -1151,6 +1151,54 @@ def cleanData(data: vtk.vtkDataObject, tolerance: float = 0.0, DO_POINT_MERGING:
     return cleaner.GetOutput()
 
 
+def filterBoolean(dataA, dataB, booleanOperationType):
+    """
+    Perform a boolean operation on two datasets. Ensure that the data is triangulated.
+
+    Args:
+        dataA (vtk.vtkDataObject): The first dataset.
+        dataB (vtk.vtkDataObject): The second dataset.
+        booleanOperationType (str): The type of boolean operation to perform. Can be 'union', 'intersection', or 'difference'.
+
+    Returns:
+        vtk.vtkPolyData: The result of the boolean operation.
+    """
+    booleanOperation = vtk.vtkBooleanOperationPolyDataFilter()
+    booleanOperation.SetInputData(0, dataA)
+    booleanOperation.SetInputData(1, dataB)
+    if booleanOperationType.lower().startswith('un'):
+        booleanOperation.SetOperationToUnion()
+    elif booleanOperationType.lower().startswith('inter'):
+        booleanOperation.SetOperationToIntersection()
+    elif booleanOperationType.lower().startswith('diff'):
+        booleanOperation.SetOperationToDifference()
+    booleanOperation.Update()
+    return booleanOperation.GetOutput()
+
+
+def tubeFilter(data, radius, nSides=12, CAPS=True):
+    """
+    Convert a polyline to a tube.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+        radius (float): The radius of the tube.
+        nSides (int, optional): The number of sides of the tube. Defaults to 12.
+        CAPS (bool, optional): Whether to cap the ends of the tube. Defaults to True.
+
+    Returns:
+        vtk.vtkPolyData: The filtered data.
+    """
+    tuber = vtk.vtkTubeFilter()
+    tuber.SetInputData(data)
+    tuber.SetRadius(radius)
+    tuber.SetNumberOfSides(nSides)
+    if CAPS:
+        tuber.SetCapping(1)
+    tuber.Update()
+    return tuber.GetOutput()
+
+
 def filterVtpSpline(data, spacing=0.001, nPoints=None, smoothFactor=None):
     p0, pE = data.GetPoints().GetPoint(0), data.GetPoints().GetPoint(data.GetNumberOfPoints() - 1)
     if smoothFactor is not None:
