@@ -1279,6 +1279,14 @@ def transformImageData(data, matrix, scaleF=[1.0,1.0,1.0]):
     return tfilterScale.GetOutput()
 
 
+def cellToPointData(data):
+    cellToPt_f = vtk.vtkCellDataToPointData()
+    cellToPt_f.SetInputData(data)
+    cellToPt_f.PassCellDataOn()
+    cellToPt_f.Update()
+    return cellToPt_f.GetOutput()
+
+
 def getOutline(dataIn):
     of = vtk.vtkOutlineFilter()
     of.SetInputData(dataIn)
