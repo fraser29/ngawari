@@ -905,7 +905,7 @@ def cumulativeDistanceAlongLine(xyzPts):
 
 
 def getIdOfPointClosestToX(X, xyz):
-    diffs = distTwoPoints(X, xyz)
+    diffs = distPointPoints(X, xyz)
     return np.argmin(diffs)
 
 

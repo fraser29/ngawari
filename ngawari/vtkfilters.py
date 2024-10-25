@@ -67,22 +67,6 @@ def getArray(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) ->
         return data.GetCellData().GetAbstractArray(arrayName)
 
 
-def getArrayAsNumpy(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) -> np.ndarray:
-    """
-    Get an array from a VTK data object as a numpy array.
-
-    Args:
-        data (vtk.vtkDataObject): The VTK data object.
-        arrayName (str): The name of the array to get.
-        pointData (bool): Whether to get point data arrays.
-
-    Returns:
-        np.ndarray: The array.
-    """
-    array = getArray(data, arrayName, pointData=pointData)
-    return numpy_support.vtk_to_numpy(array)    
-
-
 def getScalarsArrayName(data: vtk.vtkDataObject, pointData: bool = True) -> Optional[str]:
     """
     Get the name of the scalars array from a VTK data object.
@@ -651,6 +635,8 @@ def clippedByCircle(data, centerPt, normal, radius, COPY=False):
         return copyPolyData(pOut)
     return pOut
 
+def sliceByPlane(data, pt, norm): # THIS IS DEPRECIATED
+    return getDataCutByPlane(data, norm, pt)
 
 def getDataCutByPlane(data, normal, planePt):
     vtkplane = vtk.vtkPlane()
@@ -1279,6 +1265,14 @@ def transformImageData(data, matrix, scaleF=[1.0,1.0,1.0]):
     return tfilterScale.GetOutput()
 
 
+def pointToCellData(data): # pointsToCells
+    p2c = vtk.vtkPointDataToCellData()
+    p2c.SetInputData(data)
+    p2c.PassPointDataOn()
+    p2c.Update()
+    return p2c.GetOutput()
+
+
 def cellToPointData(data):
     cellToPt_f = vtk.vtkCellDataToPointData()
     cellToPt_f.SetInputData(data)
@@ -1464,7 +1458,7 @@ def shrinkWrapData(data, wrappingData=None, DEFAULT_WRAP_RES=100):
 
 def poissonRecon(data, depth=9):
     surface = vtk.vtkPoissonReconstruction()
-    surface.SetDepth(depth);
+    surface.SetDepth(depth)
 
     sampleSize = data.GetNumberOfPoints() * .00005
     if (sampleSize < 10):
