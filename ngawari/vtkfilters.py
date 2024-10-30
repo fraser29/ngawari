@@ -1246,6 +1246,27 @@ def translatePoly_AxisA_To_AxisB(polyData, vecA, vecB):
     return filterTransformPolyData(data0R, disp=polyData.GetCenter())
 
 
+def iterativeClosestPointsTransform(sourcePoly, target_poly, maxMeanDist, RIGID=False, AFFINE=False, internalIterations=50, maxLandmarks=1000):
+    icp = vtk.vtkIterativeClosestPointTransform()
+    if RIGID:
+        icp.GetLandmarkTransform().SetModeToRigidBody()
+    elif AFFINE:
+        icp.GetLandmarkTransform().SetModeToAffine()
+    else:
+        icp.GetLandmarkTransform().SetModeToSimilarity() # Trans, Rot and Scale only
+    icp.SetSource(sourcePoly)
+    icp.SetTarget(target_poly)
+    # icp.DebugOn()
+    icp.SetMaximumNumberOfIterations(internalIterations)
+    icp.StartByMatchingCentroidsOn()
+    icp.SetMaximumMeanDistance(maxMeanDist)
+    icp.SetMeanDistanceModeToAbsoluteValue()
+    icp.SetMaximumNumberOfLandmarks(maxLandmarks)
+    icp.Modified()
+    icp.Update()
+    return icp
+    
+
 def transformImageData(data, matrix, scaleF=[1.0,1.0,1.0]):
     # Returns vts
     transMatrix = vtk.vtkTransform()
