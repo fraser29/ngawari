@@ -388,6 +388,13 @@ def getPtsAsNumpy(data):
     return getVtkPointsAsNumpy(data)
 
 
+def getCellCenters(structuredData):
+    cellCentersFilter = vtk.vtkCellCenters()
+    cellCentersFilter.SetInputData(structuredData)
+    cellCentersFilter.VertexCellsOn()
+    cellCentersFilter.Update()
+    return cellCentersFilter.GetOutput()
+
 # ======================================================================================================================
 #           VTK SOURCE
 # ======================================================================================================================
@@ -1168,7 +1175,7 @@ def tubeFilter(data, radius, nSides=12, CAPS=True):
 
     Args:
         data (vtk.vtkDataObject): The VTK data object.
-        radius (float): The radius of the tube.
+        radius (float): The radius of the tube. If None then will use scalar of polydata
         nSides (int, optional): The number of sides of the tube. Defaults to 12.
         CAPS (bool, optional): Whether to cap the ends of the tube. Defaults to True.
 
@@ -1177,7 +1184,10 @@ def tubeFilter(data, radius, nSides=12, CAPS=True):
     """
     tuber = vtk.vtkTubeFilter()
     tuber.SetInputData(data)
-    tuber.SetRadius(radius)
+    if radius is None:
+        tuber.SetVaryRadiusToVaryRadiusByAbsoluteScalar()
+    else:
+        tuber.SetRadius(radius)
     tuber.SetNumberOfSides(nSides)
     if CAPS:
         tuber.SetCapping(1)
