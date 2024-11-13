@@ -13,8 +13,6 @@ Ngawari is a Python-based toolkit for simplifying operations in data analysis an
 
 To install Ngawari, run the following command:
 
-#TODO : not on pip yet (for now fork and run pip install -e)
-
 ```bash
 pip install ngawari
 ```
@@ -27,21 +25,14 @@ Here's a quick example of how to use Ngawari:
 from ngawari import ftk
 
 # Calculate Body Surface Area
-
 height_cm = 170
-
 weight_kg = 70
-
 bsa = ftk.calculateBSA(height_cm, weight_kg)
-
 print(f"Body Surface Area: {bsa:.2f} m²")
 
 # Fit a plane to 3D points
-
 points = [[0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]]
-
 plane = ftk.fitPlaneToPoints(points)
-
 print(f"Fitted plane coefficients: {plane}")
 ```
 
