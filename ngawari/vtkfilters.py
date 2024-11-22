@@ -371,6 +371,8 @@ def deleteFieldData(data: vtk.vtkDataObject) -> vtk.vtkDataObject:
 #           VTK POINTS
 # ======================================================================================================================
 def getVtkPointsAsNumpy(data):
+    if isVTI(data):
+        return np.array([data.GetPoint(pointID) for pointID in range(data.GetNumberOfPoints())])
     return numpy_support.vtk_to_numpy(data.GetPoints().GetData())
 
 def getPtsAsNumpy(data):
@@ -383,8 +385,6 @@ def getPtsAsNumpy(data):
     Returns:
         np.ndarray: The points.
     """
-    if isVTI(data):
-        return np.array([data.GetPoint(pointID) for pointID in range(data.GetNumberOfPoints())])
     return getVtkPointsAsNumpy(data)
 
 
