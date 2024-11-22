@@ -503,7 +503,6 @@ def buildPolyLineBetweenTwoPoints(ptStart, ptEnd, nPts):
 
 
 def buildPolyTrianglesAtCp(pts, refVec=None, NORMALS_OUT=True, cp=None): # FIXME - to labels
-    pts = ftk.ensurePtsNx3(pts)
     if refVec is not None:
         if pts.shape[0] > 3:
             isClockwise = ftk.isClosedPolygonClockwise(pts, refVec)
