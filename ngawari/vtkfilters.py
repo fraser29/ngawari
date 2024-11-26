@@ -116,6 +116,15 @@ def getArrayId(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) 
 
 
 def renameArray(data: vtk.vtkDataObject, arrayNameOld: str, arrayNameNew: str, pointData: bool = True) -> None:
+    """
+    Rename an array in a VTK data object.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+        arrayNameOld (str): The old name of the array.
+        arrayNameNew (str): The new name of the array.
+        pointData (bool): Whether to rename point (or cell)data arrays [default: True].
+    """
     if pointData:
         data.GetPointData().GetArray(arrayNameOld).SetName(arrayNameNew)
     else:
@@ -144,11 +153,27 @@ def getArrayAsNumpy(data: vtk.vtkDataObject, arrayName: str, RETURN_3D: bool = F
         return A
 
 
-def getScalarsAsNumpy(data: vtk.vtkDataObject, pointData: bool = True) -> np.ndarray:
+def getScalarsAsNumpy(data: vtk.vtkDataObject, RETURN_3D: bool = False, pointData: bool = True) -> np.ndarray:
+    """
+    Get the scalars as a numpy array.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+        RETURN_3D (bool): Whether to return a 3D array [default: False].
+        pointData (bool): Whether to get point (or cell) data scalars [default: True].
+    Returns:
+        np.ndarray: The scalars.
+    """
     if pointData:   
-        return numpy_support.vtk_to_numpy(data.GetPointData().GetScalars()).copy()
+        A = numpy_support.vtk_to_numpy(data.GetPointData().GetScalars()).copy()
     else:
-        return numpy_support.vtk_to_numpy(data.GetCellData().GetScalars()).copy()
+        A = numpy_support.vtk_to_numpy(data.GetCellData().GetScalars()).copy()
+    if RETURN_3D:
+        if np.ndim(A) == 2:
+            return np.reshape(A, list(data.GetDimensions())+[A.shape[1]], 'F')
+        else:
+            return np.reshape(A, data.GetDimensions(), 'F')
+    return A
 
 
 # ======================================================================================================================
@@ -217,6 +242,14 @@ def setArrayDtype(data: vtk.vtkDataObject, arrayName: str, dtype: np.dtype, SET_
 
 
 def setArrayAsScalars(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) -> None:
+    """
+    Set an array as scalars. Note: array must already be in data and if a scalars array already exists then it will be overwritten.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+        arrayName (str): The name of the array (already in data).
+        pointData (bool): Whether to set point data scalars [default: True].
+    """
     if pointData:
         data.GetPointData().SetScalars(getArray(data, arrayName, pointData=pointData))
     else:

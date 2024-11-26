@@ -348,7 +348,6 @@ def unpickleData(pickleFileName: str):
         return pickle.load(fid, **opts)
 
 
-
 def tarGZLocal_AndMove(dirToTarZip: str, tarGZFileName: str, localLocation: str, remoteLocation: Optional[str] = None) -> None:
     """
     Compress and move a directory to a local location and optionally to a remote location.
@@ -674,10 +673,12 @@ def readVTKFile(fileName: str) -> vtk.vtkDataObject:
         reader = vtk.vtkXMLMultiBlockDataReader()
     elif fileName.endswith('nrrd'):
         reader = vtk.vtkNrrdReader()
-    elif fileName.endswith('mha') | fileName.endswith('mhd'):
+    elif fileName.endswith('mha') or fileName.endswith('mhd'):
         reader = vtk.vtkMetaImageReader()
     elif fileName.endswith('png'):
         reader = vtk.vtkPNGReader()
+    elif fileName.endswith('jpg') or fileName.endswith('jpeg'):
+        reader = vtk.vtkJPEGReader()
     elif fileName.endswith('ply'):
         reader = vtk.vtkPLYReader()
     elif fileName.endswith('pvd'):
