@@ -350,14 +350,6 @@ def fitCircleRANSAC(x, y, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
             Sbest = Si
             xBest, yBest, rBest, countBest = xc, yc, r, count
     xf, yf, rf = fitCircle2D(np.vstack((x[Sbest], y[Sbest])).T, xBest, yBest, rBest)
-    if DEBUG:
-        print('Count at : %d' % (countBest))
-        import matplotlib.pyplot as plt
-        plt.plot(x, y, 'b.')
-        plt.plot(x[Sbest], y[Sbest], 'r+')
-        plt.plot(xf, yf, 'k^')
-        plt.axis('equal')
-        plt.show()
     return xf, yf, rf
 
 

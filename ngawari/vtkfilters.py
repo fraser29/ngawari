@@ -1711,7 +1711,9 @@ def getConnectedCellIds(dataMesh, searchId):
     dataMesh.GetPointCells(searchId, connectedCells)
     return connectedCells
 
-
+# ======================================================================================================================
+#           VOLUME FILTERS
+# ======================================================================================================================
 def extractStructuredSubGrid(data, ijkMinMax=None, sampleRate=(1, 1, 1), TO_INCLUDE_BOUNDARY=False):
     if type(sampleRate) == int:
         sampleRate = (sampleRate, sampleRate, sampleRate)
@@ -1761,6 +1763,37 @@ def extractVOI_fromFov(data, fovData):
     return extractVOI(data, tijk)
 
 
+def filterNullOutsideSurface(vtkObj, surfObj, arrayListToNull=None, tfArray=None):
+    if tfArray is None:
+        tfArray = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
+    if arrayListToNull is None:
+        arrayListToNull = getArrayNames(vtkObj)
+    for iA in arrayListToNull:
+        aO = getArrayAsNumpy(vtkObj, iA)
+        aO = np.multiply(aO.T, tfArray)
+        # aO *= tfA[:,np.newaxis]
+        # print aO.shape
+        addNpArray(vtkObj, aO.T, iA)
+    return vtkObj
+
+
+def filterNullInsideSurface(vtkObj, surfObj, arrayListToNull=None, nullVal=0.0):
+    tfA = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
+    if arrayListToNull is None:
+        arrayListToNull = getArrayNames(vtkObj)
+    for iA in arrayListToNull:
+        a0 = getArrayAsNumpy(vtkObj, iA)
+        a0[tfA==1] = nullVal
+        # aO = np.multiply(aO.T, tfA)
+        # aO *= tfA[:,np.newaxis]
+        # print aO.shape
+        addNpArray(vtkObj, a0.T, iA)
+    return vtkObj
+
+
+# ======================================================================================================================
+#           RESAMPLE
+# ======================================================================================================================
 def filterResampleToDataset(src, destData, PASS_POINTS=False):
     """
     Resample data from src onto destData
@@ -1901,7 +1934,6 @@ def filterVtiMedian(vtiObj, filterKernalSize=3):
 def filterGetPointsInsideSurface(data, surfaceData):
     """
     classify points as inside(t) or outside(f)
-    see filterNullOutsideSurface to use
     :param data: vtkObj
     :param surfaceData: closed polydata
     :return: list of true=INSIDE false=OUTSIDE
