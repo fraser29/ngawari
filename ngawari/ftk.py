@@ -37,6 +37,8 @@ def distPointPoints(point, points):
 
 def squareDistPointPoints(point, points):
     points = np.asarray(points)
+    if points.ndim == 1:
+        points = points[np.newaxis, :]
     deltas = points - point
     dist_2 = np.einsum('ij,ij->i', deltas, deltas)
     return dist_2
