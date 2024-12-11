@@ -408,6 +408,7 @@ def getVtkPointsAsNumpy(data):
         return np.array([data.GetPoint(pointID) for pointID in range(data.GetNumberOfPoints())])
     return numpy_support.vtk_to_numpy(data.GetPoints().GetData())
 
+
 def getPtsAsNumpy(data):
     """
     Get the points as a numpy array.
@@ -1227,7 +1228,9 @@ def tubeFilter(data, radius, nSides=12, CAPS=True):
     return tuber.GetOutput()
 
 
-def filterVtpSpline(data, spacing=0.001, nPoints=None, smoothFactor=None):
+def filterVtpSpline(data, spacing=None, nPoints=None, smoothFactor=None):
+    if (spacing is None) and (nPoints is None):
+        raise ValueError("Either spacing or nPoints must be provided")
     p0, pE = data.GetPoints().GetPoint(0), data.GetPoints().GetPoint(data.GetNumberOfPoints() - 1)
     if smoothFactor is not None:
         data = filterVtpSpline(data, nPoints=int(data.GetNumberOfPoints() / float(smoothFactor)))
@@ -1288,7 +1291,26 @@ def translatePoly_AxisA_To_AxisB(polyData, vecA, vecB):
     return filterTransformPolyData(data0R, disp=polyData.GetCenter())
 
 
+def transformPolydataA_to_B_ICP(sourcePoly, target_poly, maxMeanDist, RIGID=False, AFFINE=False, internalIterations=50, maxLandmarks=1000):
+    tx = iterativeClosestPointsTransform(sourcePoly, target_poly, maxMeanDist, RIGID=RIGID, 
+                                        AFFINE=AFFINE, internalIterations=internalIterations, 
+                                        maxLandmarks=maxLandmarks)
+    return filterTransformPolyData(sourcePoly, matrix=tx.GetMatrix())
+
+
 def iterativeClosestPointsTransform(sourcePoly, target_poly, maxMeanDist, RIGID=False, AFFINE=False, internalIterations=50, maxLandmarks=1000):
+    """
+    Iterative Closest Points Transform
+
+    Args:
+        sourcePoly (vtk.vtkPolyData): The source polydata.
+        target_poly (vtk.vtkPolyData): The target polydata.
+        maxMeanDist (float): The maximum mean distance.
+        RIGID (bool, optional): Whether to use rigid transformation. Defaults to False.
+        AFFINE (bool, optional): Whether to use affine transformation. Defaults to False.
+        internalIterations (int, optional): The number of internal iterations. Defaults to 50.
+        maxLandmarks (int, optional): The maximum number of landmarks. Defaults to 1000.
+    """
     icp = vtk.vtkIterativeClosestPointTransform()
     if RIGID:
         icp.GetLandmarkTransform().SetModeToRigidBody()

@@ -666,28 +666,6 @@ def splinePoints_RansacSmooth(xyz, periodic=0, RETURN_NUMPY=False):
     print(np.sum(np.sqrt(np.power(newPts, 2.0))))
 
 
-def splinePointsWRAPPer(xyz, nSplinePts, periodic=0, RETURN_NUMPY=False, smooth=0, u=None, weights=None):
-    """
-    this iss with wrapping for periodic - try to use for smoothing - but not very good...
-     returns list, shape (3, n), unless ask for numpy then transpose
-    """
-    pts = np.asarray(xyz)
-    if periodic > 0:
-        pad = 3
-        pts = np.pad(pts, [(pad, pad), (0, 0)], mode='wrap')
-        if weights is not None:
-            weights = np.pad(weights, pad, mode='wrap')
-    pts = pts.transpose()
-    tck, u = interpolate.splprep(pts, u=u, s=smooth, per=periodic, w=weights)
-    if periodic > 0.0:
-        uu = np.linspace(u[pad-1], u[-pad], nSplinePts)
-    else:
-        uu = np.linspace(u.min(), u.max(), nSplinePts)
-    newPts = interpolate.splev(uu, tck, der=0)
-    if RETURN_NUMPY:
-        return np.array(newPts).T
-    return newPts
-
 
 def splineFunction(x, y, kind):
     return interpolate.interp1d(x, y, bounds_error=False, kind=kind)
@@ -1312,9 +1290,11 @@ def interpolateNANsFromSurroundingValues_linear(array):
 
 
 def interpolateNANsFromSurroundingValues_cubic(nparray):
+    arrayTF = np.isnan(nparray)
+    if sum(arrayTF) == 0:
+        return nparray
     dims = nparray.shape
     gridX, gridY = np.mgrid[0:dims[0], 0:dims[1]]
-    arrayTF = np.isnan(nparray)
     pp = [[i, j] for i, j in zip(gridX.flatten(), gridY.flatten()) if not arrayTF[i, j]]
     values = [nparray[i, j] for i, j in zip(gridX.flatten(), gridY.flatten()) if not arrayTF[i, j]]
     return interpolate.griddata(pp, values, (gridX, gridY), method='cubic')
