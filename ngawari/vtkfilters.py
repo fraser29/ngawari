@@ -1306,8 +1306,8 @@ def iterativeClosestPointsTransform(sourcePoly, target_poly, maxMeanDist, RIGID=
         sourcePoly (vtk.vtkPolyData): The source polydata.
         target_poly (vtk.vtkPolyData): The target polydata.
         maxMeanDist (float): The maximum mean distance.
-        RIGID (bool, optional): Whether to use rigid transformation. Defaults to False.
-        AFFINE (bool, optional): Whether to use affine transformation. Defaults to False.
+        RIGID (bool, optional): Whether to use rigid transformation. Defaults to False. (default Similarity)
+        AFFINE (bool, optional): Whether to use affine transformation. Defaults to False. (default Similarity)
         internalIterations (int, optional): The number of internal iterations. Defaults to 50.
         maxLandmarks (int, optional): The maximum number of landmarks. Defaults to 1000.
     """
