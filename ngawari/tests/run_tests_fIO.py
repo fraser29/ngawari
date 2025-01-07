@@ -125,6 +125,15 @@ class TestReadPVD(unittest.TestCase):
             fIO.deleteFilesByPVD(pvdFile2)
 
 
+class TestTarGZLocal_AndMove(unittest.TestCase):
+    def runTest(self):
+        vtiDict = buildVTIDict()
+        fOut = fIO.writeVTK_PVD_Dict(vtiDict, TEST_DIRECTORY, 'test-pvd', 'vti')
+        pvdDir = os.path.join(TEST_DIRECTORY, 'test-pvd')
+        fIO.tarGZLocal_AndMove(pvdDir, 'test-pvd.tar.gz', TEST_DIRECTORY)
+        self.assertTrue(os.path.exists(os.path.join(TEST_DIRECTORY, 'test-pvd.tar.gz')))
+        if not DEBUG:
+            os.unlink(os.path.join(TEST_DIRECTORY, 'test-pvd.tar.gz'))
 
 
 

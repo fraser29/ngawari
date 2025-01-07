@@ -25,6 +25,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 from typing import List, Dict, Union, Optional, Tuple
+import tarfile
 
 def remove_symbols(text: str) -> str:
     """
@@ -44,6 +45,7 @@ def remove_not_allowed(text: str, allowed_characters: str = string.printable + '
 
     Args:
         text (str): The input text to process.
+        allowed_characters (str): The set of characters to keep (default is all printable characters and some special (DE, FR) characters).
 
     Returns:
         str: The text with disallowed characters removed.
@@ -144,7 +146,7 @@ def writeDictionaryToFile(fileName: str, dictToWrite: Dict[str, str], equator: s
     Write a dictionary to a file.
 
     Args:
-        fileName (str): The name of the file to write to.
+        fileName (str): The name of the file to write to (if json then calls writeDictionaryToJSON - json.dump with Numpy encoder).
         dictToWrite (dict): The dictionary to write to the file.
         equator (str, optional): The character used to separate keys and values. Defaults to '='.
         commentor (str, optional): The character used to denote comments. Defaults to '#'.
@@ -300,7 +302,7 @@ def readFileToListOfLines(fileName: str, commentSymbol: str = '#') -> List[List[
  
 def appendFiles(listOfFiles: List[str], carriageReturn: str = '') -> str:
     """
-    Append the contents of multiple files into a single string.
+    Append the contents of multiple text files into a single string.
 
     Args:
         listOfFiles (list): A list of file names to append.
@@ -351,6 +353,7 @@ def unpickleData(pickleFileName: str):
 def tarGZLocal_AndMove(dirToTarZip: str, tarGZFileName: str, localLocation: str, remoteLocation: Optional[str] = None) -> None:
     """
     Compress and move a directory to a local location and optionally to a remote location.
+    Uses Python's tarfile module for cross-platform compatibility.
 
     Args:
         dirToTarZip (str): The directory to compress and zip.
@@ -358,11 +361,24 @@ def tarGZLocal_AndMove(dirToTarZip: str, tarGZFileName: str, localLocation: str,
         localLocation (str): The local location to move the compressed file.
         remoteLocation (str, optional): The remote location to move the compressed file. Defaults to None.
     """
-    tarcmd = "tar -zcf %s %s" % (os.path.join(localLocation, tarGZFileName), dirToTarZip)
-    os.system(tarcmd)
+    # Get the parent directory and target directory name
+    parent_dir = os.path.dirname(dirToTarZip)
+    target_dir = os.path.basename(dirToTarZip)
+    output_file = os.path.join(localLocation, tarGZFileName)
+    
+    # Create tar.gz archive
+    with tarfile.open(output_file, "w:gz") as tar:
+        # Change to parent directory to get relative paths
+        original_dir = os.getcwd()
+        os.chdir(parent_dir)
+        try:
+            tar.add(target_dir)
+        finally:
+            os.chdir(original_dir)
+    
     if remoteLocation is not None:
-        shutil.copy(tarGZFileName, remoteLocation)
-        os.unlink(tarGZFileName)
+        shutil.copy(output_file, remoteLocation)
+        os.unlink(output_file)
 
 
 # =========================================================================
