@@ -1607,6 +1607,12 @@ def smoothTris_SINC(data, iterations=20):
     smoother.Update()
     return smoother.GetOutput()
 
+def filterExtractEdges(data):
+    ee = vtk.vtkExtractEdges()
+    ee.SetInputData(data)
+    ee.Update()
+    return ee.GetOutput()
+
 def isPolyDataWaterTight(data):
     alg = vtk.vtkFeatureEdges()
     alg.FeatureEdgesOff()
@@ -1620,7 +1626,6 @@ def isPolyDataWaterTight(data):
 def isPolyDataPolyLine(data):
     for k1 in range(data.GetNumberOfCells()):
         aa = data.GetCell(k1).IsA('vtkPolyLine')
-        # print(k1, aa) # DEBUG - WORKS
         if not aa:
             return False # if find any non-line - return false
     return True
@@ -1640,7 +1645,6 @@ def calculatePolyDataArea(vtpdata):  # latest version will allow compute on poly
 def getPolyDataCenterPtNormal(data, refNorm=None):
     """ return 2x np array center point, normal for each tri in poly data
     """
-    # return flow norm -- mult by dens for mass flow
     nCells = data.GetNumberOfCells()
     cp, norm = [], []
     for k1 in range(nCells):
