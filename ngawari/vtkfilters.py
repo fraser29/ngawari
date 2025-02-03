@@ -364,7 +364,7 @@ def getFieldDataNames(data: vtk.vtkDataObject) -> List[str]:
     return names
 
 
-def dublicateFieldData(srcData: vtk.vtkDataObject, destData: vtk.vtkDataObject) -> None:
+def duplicateFieldData(srcData: vtk.vtkDataObject, destData: vtk.vtkDataObject) -> None:
     """
     Duplicate the field data from one VTK data object to another.
 
@@ -1707,6 +1707,12 @@ def filterTriangulate(data):
     return triFilter.GetOutput()
 
 
+def getVolumeSurfaceAreaOfPolyData(data):
+    data = filterTriangulate(data)
+    massFilter = vtk.vtkMassProperties()
+    massFilter.SetInputData(data)
+    massFilter.Update()
+    return (massFilter.GetVolume(), massFilter.GetSurfaceArea())
 
 
 # ======================================================================================================================
