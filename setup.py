@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="ngawari",
-    version="0.1.1",
+    version="0.1.2",
     author="Fraser M. Callaghan",
     author_email="callaghan.fm@gmail.com",
     description="A simple and functional toolkit for working with data in VTK.",

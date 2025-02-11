@@ -945,8 +945,10 @@ def getVtsResolution(dataVts):
     dk = abs(ftk.distTwoPoints(p3, o))
     return [di, dj, dk]
 
+
 def getResolution_VTI(data):
     return data.GetSpacing()
+
 
 def vtsToVtiDimensions(dataVts):#, FACTOR=1.0, MAKE_ISOTROPIC=False):
     ''' Will calulate the dimensions, and extent of a
@@ -960,8 +962,6 @@ def vtsToVtiDimensions(dataVts):#, FACTOR=1.0, MAKE_ISOTROPIC=False):
     deltas = [bb[1]-bb[0], bb[3]-bb[2], bb[5]-bb[4]]
     dims0 = dataVts.GetDimensions()
     res0 = getVtsResolution(dataVts)
-    # DX = res0[0]*(dims0[0]-1)
-    # DY = res0[1]*(dims0[1]-1)
     DZ = res0[2]*(dims0[2]-1)
     DDi = [abs(DZ-deltas[i]) for i in range(3)]
     SLICE_DIR = np.argmin(DDi)
@@ -972,11 +972,6 @@ def vtsToVtiDimensions(dataVts):#, FACTOR=1.0, MAKE_ISOTROPIC=False):
     elif SLICE_DIR == 2:
         res = [res0[0], res0[1], res0[2]]
     dims = [int(deltas[i]/res[i]) for i in range(3)]
-
-    # res = [i * j for i,j in zip(res, FACTOR)]
-    # if MAKE_ISOTROPIC:
-    #     res = [min(res), min(res), min(res)]
-    # dims = [int(((bounds[i] - bounds[i - 1]) / iRes)) for i, iRes in zip([1, 3, 5], res)]
     sides = [(bounds[i] - bounds[i - 1]) for i in [1, 3, 5]]
     return dims, sides, res, [bounds[0], bounds[2], bounds[4]]
 
@@ -995,12 +990,16 @@ def getDimsResOriginFromOutline(outline, res, pad):
     nR, nC, nK = int(DI/di)+1+pad, int(DJ/dj)+1+pad, int(DK/dk)+1+pad
     return [nR,nC,nK], [di,dj,dk], [i-j*pad/2 for i,j in zip(origin,[di,dj,dk])]
 
+
 def buildRawImageDataFromPolyData(polyData, res, pad=1):
     return buildRawImageDataFromOutline(getOutline(polyData), res, pad)
+
+
 def buildRawImageDataFromOutline(outline, res, pad=1):
     dd, rr, oo = getDimsResOriginFromOutline(outline, res, pad)
     img = buildRawImageData(dd, rr, oo)
     return img
+
 
 def buildRawImageDataFromOutline_dims(outline, dims):
     origin = outline.GetPoints().GetPoint(0)
@@ -1013,10 +1012,12 @@ def buildRawImageDataFromOutline_dims(outline, dims):
     img = buildRawImageData(dims, [di, dj, dk], origin)
     return img
 
+
 def duplicateImageData(imData):
     return buildRawImageData(imData.GetDimensions(),
                              imData.GetSpacing(), 
                              imData.GetOrigin())
+
 
 def buildRawImageData(dims, res, origin=[0 ,0 ,0]):
     newImg = vtk.vtkImageData()
@@ -1024,6 +1025,7 @@ def buildRawImageData(dims, res, origin=[0 ,0 ,0]):
     newImg.SetOrigin(origin[0], origin[1], origin[2])
     newImg.SetDimensions(dims[0] ,dims[1] ,dims[2])
     return newImg
+
 
 def surf2ImageBW(dataSurf, arrayName, res, nDilate=0, nMed=0):
     imBW = buildRawImageDataFromOutline(getOutline(dataSurf), res, pad=10)
@@ -1039,6 +1041,7 @@ def surf2ImageBW(dataSurf, arrayName, res, nDilate=0, nMed=0):
         imBW = filterVtiMedian(imBW, nMed)
     return imBW
 
+
 def getVarValueAtI_ImageData(imData, X, arrayName):
     """
     Useful to get the vel value at a location from imdata
@@ -1051,6 +1054,7 @@ def getVarValueAtI_ImageData(imData, X, arrayName):
     n = imData.GetPointData().GetArray(arrayName).GetTuple(iXID)
     return n
 
+
 def getImageX(data, pointID):
     """
     Get X from image matching pointID. NOTE: opposite: iXID = imData.FindPoint(X)
@@ -1059,6 +1063,7 @@ def getImageX(data, pointID):
     :return: tuple - the point x,y,z
     """
     return data.GetPoint(pointID)
+
 
 def imageX_ToStructuredCoords(imageData, xyz_list):
     """
@@ -1079,9 +1084,11 @@ def imageX_ToStructuredCoords(imageData, xyz_list):
         ijk_list.append(ijk)
     return ijk_list
 
+
 def imageIndex_ToStructuredCoords(imageData, index_list):
     dd = imageData.GetDimensions()
     return [np.unravel_index(i, shape=dd, order='F') for i in index_list]
+
 
 def getNeighbours26_fromImageIndex(imageData, index, delta=1, RETURN_STRUCTCOORDS=False):
     """
@@ -1108,18 +1115,26 @@ def getNeighbours26_fromImageIndex(imageData, index, delta=1, RETURN_STRUCTCOORD
         return newStructCoords
     return imageStrucCoords_toIndex(imageData, newStructCoords)
 
+
 def imageStrucCoords_toIndex(imageData, strucCoords_list):
     # dd = imageData.GetDimensions()
     # a =  [np.ravel_multi_index(i, dd, order='F') for i in strucCoords_list]
     b = [imageData.ComputePointId(ijk) for ijk in strucCoords_list]
     return b
 
+
 def imageStrucCoords_toX(imageData, strucCoords_list):
     # Be awre - this is not considering any transform
     return [getImageX(imageData, i) for i in imageStrucCoords_toIndex(imageData, strucCoords_list)]
 
 
-
+def filterFlipImageData(vtiObj, axis):
+    flipper = vtk.vtkImageFlip()
+    flipper.SetFilteredAxes(axis)
+    flipper.SetInputData(vtiObj)
+    flipper.Update()
+    return flipper.GetOutput()
+    
 # ======================================================================================================================
 #           POLY DATA
 # ======================================================================================================================

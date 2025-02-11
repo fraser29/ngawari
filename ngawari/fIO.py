@@ -679,7 +679,7 @@ def readVTKFile(fileName: str) -> vtk.vtkDataObject:
     elif fileName.endswith('stl'):
         reader = vtk.vtkSTLReader()
         reader.ScalarTagsOn()
-    elif fileName.endswith('nii'):
+    elif fileName.endswith('nii') or fileName.endswith('nii.gz'):
         reader = vtk.vtkNIFTIImageReader()
     elif fileName.endswith('vti'):
         reader = vtk.vtkXMLImageDataReader()

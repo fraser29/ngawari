@@ -163,3 +163,4 @@ cython_debug/
 
 TEST_DATA/
 .vscode/
+sandbox.py
