@@ -2055,7 +2055,6 @@ def filterMaskImageBySurface(vtiObj, surf3D, fill_value=1, arrayName="LabelMap")
         A = getArrayAsNumpy(vtiObj, arrayName)
         AS = getArrayAsNumpy(stencilImage, getScalarsArrayName(stencilImage))
         A[AS==fill_value] = fill_value
-        A[AS!=fill_value] = 0
         setArrayFromNumpy(vtiObj, A, arrayName)
     return vtiObj
 
