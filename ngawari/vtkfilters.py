@@ -2019,6 +2019,47 @@ def filterVtiMedian(vtiObj, filterKernalSize=3):
 #     filtAD.Update()
 #     return filtAD.GetOutput()
 
+def filterMaskImageBySurface(vtiObj, surf3D, fill_value=1, arrayName="LabelMap"):
+    """
+    Create a binary mask from a VTK image and a closed surface. 
+    The mask is added as an array to the input image.
+    
+    Args:
+        image_data: vtkImageData - The reference image that defines the output dimensions and spacing
+        surface: vtkPolyData - The closed surface to create mask from
+        fill_value: Value to use for the mask (default=1)
+        arrayName: Name of the array to use for the mask (default="LabelMap")
+    Returns:
+        vtkImageData with same dimensions as input but containing binary mask
+    """
+    # Create stencil from surface
+    poly_to_stencil = vtk.vtkPolyDataToImageStencil()
+    poly_to_stencil.SetInputData(surf3D)
+    poly_to_stencil.SetOutputOrigin(vtiObj.GetOrigin())
+    poly_to_stencil.SetOutputSpacing(vtiObj.GetSpacing())
+    poly_to_stencil.SetOutputWholeExtent(vtiObj.GetExtent())
+    poly_to_stencil.Update()
+
+    # Create image from stencil
+    stencil_to_image = vtk.vtkImageStencilToImage()
+    stencil_to_image.SetInputConnection(poly_to_stencil.GetOutputPort())
+    stencil_to_image.SetOutsideValue(0)
+    stencil_to_image.SetInsideValue(fill_value)
+    stencil_to_image.SetOutputScalarType(vtk.VTK_UNSIGNED_CHAR)
+    stencil_to_image.Update()
+    stencilImage = stencil_to_image.GetOutput()
+    # Add mask as array to input image
+    if arrayName not in getArrayNames(vtiObj):
+        addNpArray(vtiObj, getArrayAsNumpy(stencilImage, getScalarsArrayName(stencilImage)), arrayName)
+    else:
+        A = getArrayAsNumpy(vtiObj, arrayName)
+        AS = getArrayAsNumpy(stencilImage, getScalarsArrayName(stencilImage))
+        A[AS==fill_value] = fill_value
+        A[AS!=fill_value] = 0
+        setArrayFromNumpy(vtiObj, A, arrayName)
+    return vtiObj
+
+
 def filterGetPointsInsideSurface(data, surfaceData):
     """
     classify points as inside(t) or outside(f)
