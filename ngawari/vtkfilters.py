@@ -15,9 +15,18 @@ from . import ftk
 # ======================================================================================================================
 def isVTI(data):
     return data.IsA('vtkImageData')
+
+
 def isVTP(data):
     try:
         return data.IsA('vtkPolyData')
+    except AttributeError:
+        return False
+
+
+def isVTS(data):
+    try:
+        return data.IsA('vtkStructuredGrid')
     except AttributeError:
         return False
 
@@ -1117,10 +1126,18 @@ def getNeighbours26_fromImageIndex(imageData, index, delta=1, RETURN_STRUCTCOORD
 
 
 def imageStrucCoords_toIndex(imageData, strucCoords_list):
-    # dd = imageData.GetDimensions()
-    # a =  [np.ravel_multi_index(i, dd, order='F') for i in strucCoords_list]
-    b = [imageData.ComputePointId(ijk) for ijk in strucCoords_list]
-    return b
+    """
+    Convert structured coordinates to image indices
+    :param imageData: image data
+    :param strucCoords_list: list of tuples
+    :return: list of ints
+    """
+    if len(strucCoords_list) == 3:
+        try:
+            strucCoords_list[0][0]
+        except TypeError:
+            strucCoords_list = [strucCoords_list]
+    return [imageData.ComputePointId(ijk) for ijk in strucCoords_list]
 
 
 def imageStrucCoords_toX(imageData, strucCoords_list):
@@ -2019,6 +2036,25 @@ def filterVtiMedian(vtiObj, filterKernalSize=3):
 #     filtAD.Update()
 #     return filtAD.GetOutput()
 
+def filterSurfaceToImageStencil(vtiObj, surf3D, fill_value=1):
+    # Create stencil from surface
+    poly_to_stencil = vtk.vtkPolyDataToImageStencil()
+    poly_to_stencil.SetInputData(surf3D)
+    poly_to_stencil.SetOutputOrigin(vtiObj.GetOrigin())
+    poly_to_stencil.SetOutputSpacing(vtiObj.GetSpacing())
+    poly_to_stencil.SetOutputWholeExtent(vtiObj.GetExtent())
+    poly_to_stencil.Update()
+    # Create image from stencil
+    stencil_to_image = vtk.vtkImageStencilToImage()
+    stencil_to_image.SetInputConnection(poly_to_stencil.GetOutputPort())
+    stencil_to_image.SetOutsideValue(0)
+    stencil_to_image.SetInsideValue(fill_value)
+    stencil_to_image.SetOutputScalarType(vtk.VTK_UNSIGNED_CHAR)
+    stencil_to_image.Update()
+    stencilImage = stencil_to_image.GetOutput()
+    return stencilImage
+
+
 def filterMaskImageBySurface(vtiObj, surf3D, fill_value=1, arrayName="LabelMap"):
     """
     Create a binary mask from a VTK image and a closed surface. 
@@ -2032,22 +2068,7 @@ def filterMaskImageBySurface(vtiObj, surf3D, fill_value=1, arrayName="LabelMap")
     Returns:
         vtkImageData with same dimensions as input but containing binary mask
     """
-    # Create stencil from surface
-    poly_to_stencil = vtk.vtkPolyDataToImageStencil()
-    poly_to_stencil.SetInputData(surf3D)
-    poly_to_stencil.SetOutputOrigin(vtiObj.GetOrigin())
-    poly_to_stencil.SetOutputSpacing(vtiObj.GetSpacing())
-    poly_to_stencil.SetOutputWholeExtent(vtiObj.GetExtent())
-    poly_to_stencil.Update()
-
-    # Create image from stencil
-    stencil_to_image = vtk.vtkImageStencilToImage()
-    stencil_to_image.SetInputConnection(poly_to_stencil.GetOutputPort())
-    stencil_to_image.SetOutsideValue(0)
-    stencil_to_image.SetInsideValue(fill_value)
-    stencil_to_image.SetOutputScalarType(vtk.VTK_UNSIGNED_CHAR)
-    stencil_to_image.Update()
-    stencilImage = stencil_to_image.GetOutput()
+    stencilImage = filterSurfaceToImageStencil(vtiObj, surf3D, fill_value=fill_value)
     # Add mask as array to input image
     if arrayName not in getArrayNames(vtiObj):
         addNpArray(vtiObj, getArrayAsNumpy(stencilImage, getScalarsArrayName(stencilImage)), arrayName)
