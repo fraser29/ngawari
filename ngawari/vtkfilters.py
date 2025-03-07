@@ -2147,6 +2147,30 @@ def getDataWithThreshold(data, thresholdArrayName, thresholdLower, thresholdUppe
     return thresholder.GetOutput()
 
 
+def countPointsInVti(vtiObj, objWithPoints, npArray=None, countArrayName="count", weightingArray=None):
+    ''' Add cell array "count" to vti with count of points in cell'''
+    cellLocator = vtk.vtkCellLocator()
+    cellLocator.SetDataSet(vtiObj)
+    cellLocator.BuildLocator()
+    if getArrayId(vtiObj, countArrayName, pointData=False) is None:
+        A = np.zeros(vtiObj.GetNumberOfCells())
+    else:
+        A = getArrayAsNumpy(vtiObj, countArrayName, pointData=False)
+    if weightingArray is not None:
+        weightingArray = getArrayAsNumpy(objWithPoints, weightingArray)
+    else:
+        weightingArray = np.ones(objWithPoints.GetNumberOfPoints())
+    for i in range(objWithPoints.GetNumberOfPoints()):
+        x = objWithPoints.GetPoints().GetPoint(i)
+        cellId = cellLocator.FindCell(x)
+        if npArray is None:
+            A[cellId]+=1 * weightingArray[i]
+        else:
+            A[cellId]+=npArray[i] * weightingArray[i]
+    setArrayFromNumpy(vtiObj, A, countArrayName, pointData=False)
+    vtiObj = cellToPointData(vtiObj)
+    setArrayAsScalars(vtiObj, countArrayName)
+    return vtiObj
 
 
 
