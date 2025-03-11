@@ -56,10 +56,12 @@ class TestBuildVTI(unittest.TestCase):
     def runTest(self):
         N = 12
         image = buildSinusoidalVTI(0.5, 3.0, N)
+        dims = [0,0,0]
+        image.GetDimensions(dims)
         self.assertEqual(image.GetNumberOfPoints(), N*N*N, "Incorrect number of points")
         self.assertEqual(image.GetNumberOfCells(), (N-1)*(N-1)*(N-1), "Incorrect number of cells")
         self.assertEqual(image.GetPointData().GetArrayName(0), 'sinusoidalArray', "Incorrect array name")
-        self.assertEqual(image.GetDimensions(), (N,N,N), "Incorrect dimensions")
+        self.assertEqual(dims, [N,N,N], "Incorrect dimensions")
         self.assertEqual(image.GetOrigin(), (0,0,0), "Incorrect origin")
         self.assertEqual(image.GetSpacing(), (1,1,1), "Incorrect spacing")
 

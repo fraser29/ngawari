@@ -155,9 +155,9 @@ def getArrayAsNumpy(data: vtk.vtkDataObject, arrayName: str, RETURN_3D: bool = F
     A = numpy_support.vtk_to_numpy(getArray(data, arrayName, pointData=pointData)).copy()
     if RETURN_3D:
         if np.ndim(A) == 2:
-            return np.reshape(A, list(data.GetDimensions())+[A.shape[1]], 'F')
+            return np.reshape(A, list(__getDimensions(data))+[A.shape[1]], 'F')
         else:
-            return np.reshape(A, data.GetDimensions(), 'F')
+            return np.reshape(A, __getDimensions(data), 'F')
     else:
         return A
 
@@ -179,10 +179,16 @@ def getScalarsAsNumpy(data: vtk.vtkDataObject, RETURN_3D: bool = False, pointDat
         A = numpy_support.vtk_to_numpy(data.GetCellData().GetScalars()).copy()
     if RETURN_3D:
         if np.ndim(A) == 2:
-            return np.reshape(A, list(data.GetDimensions())+[A.shape[1]], 'F')
+            return np.reshape(A, list(__getDimensions(data))+[A.shape[1]], 'F')
         else:
-            return np.reshape(A, data.GetDimensions(), 'F')
+            return np.reshape(A, __getDimensions(data), 'F')
     return A
+
+
+def __getDimensions(data):
+    dims = [0,0,0]
+    data.GetDimensions(dims) 
+    return dims
 
 
 # ======================================================================================================================
@@ -225,7 +231,7 @@ def addNpArray(data: vtk.vtkDataObject, npArray: np.ndarray, arrayName: str, SET
         if np.ndim(npArray) == 4:
             npArray = np.reshape(npArray, (np.prod(npArray.shape[:3]), 3), 'F')
         else:
-            npArray = np.reshape(npArray, np.prod(data.GetDimensions()), 'F')
+            npArray = np.reshape(npArray, np.prod(__getDimensions(data)), 'F')
     aArray = numpy_support.numpy_to_vtk(npArray, deep=1)
     aArray.SetName(arrayName)
     if SET_SCALAR:
@@ -969,7 +975,7 @@ def vtsToVtiDimensions(dataVts):#, FACTOR=1.0, MAKE_ISOTROPIC=False):
     bounds = dataVts.GetBounds()
     bb = np.array(dataVts.GetBounds())
     deltas = [bb[1]-bb[0], bb[3]-bb[2], bb[5]-bb[4]]
-    dims0 = dataVts.GetDimensions()
+    dims0 = __getDimensions(dataVts)
     res0 = getVtsResolution(dataVts)
     DZ = res0[2]*(dims0[2]-1)
     DDi = [abs(DZ-deltas[i]) for i in range(3)]
@@ -1023,7 +1029,7 @@ def buildRawImageDataFromOutline_dims(outline, dims):
 
 
 def duplicateImageData(imData):
-    return buildRawImageData(imData.GetDimensions(),
+    return buildRawImageData(__getDimensions(imData),
                              imData.GetSpacing(), 
                              imData.GetOrigin())
 
@@ -1095,7 +1101,7 @@ def imageX_ToStructuredCoords(imageData, xyz_list):
 
 
 def imageIndex_ToStructuredCoords(imageData, index_list):
-    dd = imageData.GetDimensions()
+    dd = __getDimensions(imageData)
     return [np.unravel_index(i, shape=dd, order='F') for i in index_list]
 
 
@@ -1108,7 +1114,7 @@ def getNeighbours26_fromImageIndex(imageData, index, delta=1, RETURN_STRUCTCOORD
     :param RETURN_STRUCTCOORDS: bool
     :return: list of ints
     """
-    dims = imageData.GetDimensions()
+    dims = __getDimensions(imageData)
     strucCoord = imageIndex_ToStructuredCoords(imageData, [index])[0]
     newStructCoords = []
     for k0 in range(0-delta, 1+delta):
@@ -1931,8 +1937,7 @@ def filterResampleToImage(vtsObj, dims=None, bounder=None):
     rif = vtk.vtkResampleToImage()
     rif.SetInputDataObject(vtsObj)
     if dims is None:
-        dims = [0,0,0]
-        vtsObj.GetDimensions(dims)
+        dims = __getDimensions(vtsObj)
     try:
         _ = dims[0]
     except TypeError:
