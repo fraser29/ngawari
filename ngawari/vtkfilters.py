@@ -940,6 +940,7 @@ def vtiToVts(data):
     sg.Update()
     return sg.GetOutput()
 
+
 def vtsToVti(dataVts):#, MAKE_ISOTROPIC=False):
     return filterResampleToImage(dataVts)
 
@@ -964,31 +965,6 @@ def getVtsResolution(dataVts):
 def getResolution_VTI(data):
     return data.GetSpacing()
 
-
-def vtsToVtiDimensions(dataVts):#, FACTOR=1.0, MAKE_ISOTROPIC=False):
-    ''' Will calulate the dimensions, and extent of a
-        vti if it were to fit a given vts.
-        FACTOR is scale factor on resolution (e.g. x2=coarser)
-    '''
-    # if not type(FACTOR)==list:
-    #     FACTOR = [FACTOR, FACTOR, FACTOR]
-    bounds = dataVts.GetBounds()
-    bb = np.array(dataVts.GetBounds())
-    deltas = [bb[1]-bb[0], bb[3]-bb[2], bb[5]-bb[4]]
-    dims0 = __getDimensions(dataVts)
-    res0 = getVtsResolution(dataVts)
-    DZ = res0[2]*(dims0[2]-1)
-    DDi = [abs(DZ-deltas[i]) for i in range(3)]
-    SLICE_DIR = np.argmin(DDi)
-    if SLICE_DIR == 0:
-        res = [res0[2], res0[0], res0[1]]
-    elif SLICE_DIR == 1:
-        res = [res0[0], res0[2], res0[1]]
-    elif SLICE_DIR == 2:
-        res = [res0[0], res0[1], res0[2]]
-    dims = [int(deltas[i]/res[i]) for i in range(3)]
-    sides = [(bounds[i] - bounds[i - 1]) for i in [1, 3, 5]]
-    return dims, sides, res, [bounds[0], bounds[2], bounds[4]]
 
 def getDimsResOriginFromOutline(outline, res, pad):
     try:
@@ -1856,17 +1832,43 @@ def extractVOI(data, ijkMinMax, sampleRate=(1, 1, 1)):
 
 def extractVOI_fromFov(data, fovData):
     bounds = fovData.GetBounds()
+    if isVTS(data):
+        extent = data.GetExtent()
+        points = data.GetPoints()
+        dims = __getDimensions(data)
+        # Initialize min/max indices
+        imin, imax = extent[1], extent[0]
+        jmin, jmax = extent[3], extent[2]
+        kmin, kmax = extent[5], extent[4]
+        # Check each point
+        for i in range(extent[0], extent[1]+1):
+            for j in range(extent[2], extent[3]+1):
+                for k in range(extent[4], extent[5]+1):                    
+                    idx = (k - extent[4]) * dims[0] * dims[1] + \
+                         (j - extent[2]) * dims[0] + \
+                         (i - extent[0])
+                    point = points.GetPoint(idx)
+                    if (point[0] >= bounds[0] and point[0] <= bounds[1] and
+                        point[1] >= bounds[2] and point[1] <= bounds[3] and
+                        point[2] >= bounds[4] and point[2] <= bounds[5]):
+                        imin = min(imin, i)
+                        imax = max(imax, i)
+                        jmin = min(jmin, j)
+                        jmax = max(jmax, j)
+                        kmin = min(kmin, k)
+                        kmax = max(kmax, k)
+        return extractStructuredSubGrid(data, [imin, imax, jmin, jmax, kmin, kmax])
     bb = []
     for k1 in [0, 1]:
         for k2 in [2, 3]:
             for k3 in [4, 5]:
                 pt = [bounds[k1], bounds[k2], bounds[k3]]
                 bb.append(pt)
-    ti, tj, tk = [999990, 0], [999990, 0], [999990, 0]
+    ti, tj, tk = [9999e90, 0], [9999e90, 0], [9999e90, 0]
     for X in bb:
         ijk = [0, 0, 0]
         pp = [0, 0, 0]
-        oo = data.ComputeStructuredCoordinates(X, ijk, pp)
+        data.ComputeStructuredCoordinates(X, ijk, pp)
         for k0, tt in zip(ijk, [ti, tj, tk]):
             tt[0] = min(tt[0], k0)
             tt[1] = max(tt[1], k0)
@@ -1933,11 +1935,15 @@ def filterResampleDictToDataset(srcDict, destData):
         dictOut[iK] = filterResampleToDataset(srcDict[iK], destData)
     return dictOut
 
+
 def filterResampleToImage(vtsObj, dims=None, bounder=None):
     rif = vtk.vtkResampleToImage()
     rif.SetInputDataObject(vtsObj)
     if dims is None:
-        dims = __getDimensions(vtsObj)
+        outline = getOutline(vtsObj)
+        res = getVtsResolution(vtsObj)
+        img = buildRawImageDataFromOutline(outline, min(res), pad=0)
+        return filterResampleToDataset(vtsObj, img)
     try:
         _ = dims[0]
     except TypeError:
@@ -1945,7 +1951,10 @@ def filterResampleToImage(vtsObj, dims=None, bounder=None):
     if bounder is not None:
         rif.UseInputBoundsOff()
         rif.SetSamplingBounds(bounder.GetBounds())
+    else:
+        rif.UseInputBoundsOn()
     rif.SetSamplingDimensions(dims[0],dims[1],dims[2])
+
     rif.Update()
     return rif.GetOutput()
 
