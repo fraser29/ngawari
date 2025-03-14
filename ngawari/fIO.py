@@ -627,6 +627,7 @@ def writeVTKFile(data: vtk.vtkDataObject, fileName: str, STL_ASCII: bool = False
         str: The full file name.
     """
     writer = None
+    fileName = str(fileName)
     if fileName.endswith('vtp'):
         writer = vtk.vtkXMLPolyDataWriter()
     elif fileName.endswith('vts'):
