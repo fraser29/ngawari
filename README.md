@@ -48,8 +48,13 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## License
 
-Ngawari is released under the Apache License 2.0. See the [LICENSE](LICENSE) file for more details.
+Ngawari is released under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
 ## Contact
 
 For any questions or support, please open an issue on our [GitHub repository](https://github.com/fraser29/ngawari) or contact us at support@ngawari.com.
+
+## Dependencies
+
+This project uses the following major dependencies:
+- VTK (BSD 3-Clause License) - https://vtk.org/ 
