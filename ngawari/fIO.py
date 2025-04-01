@@ -645,7 +645,6 @@ def writeVTKFile(data: vtk.vtkDataObject, fileName: str, STL_ASCII: bool = False
         writer.SetDataModeToBinary()
     elif fileName.endswith('mhd'):
         writer = vtk.vtkMetaImageWriter()
-        writer.SetRAWFileName(fileName.endswith('raw'))
     elif fileName.endswith('mha'):
         writer = vtk.vtkMetaImageWriter()
     elif fileName.endswith('nii'):
@@ -696,6 +695,8 @@ def readVTKFile(fileName: str) -> vtk.vtkDataObject:
         reader = vtk.vtkPNGReader()
     elif fileName.endswith('jpg') or fileName.endswith('jpeg'):
         reader = vtk.vtkJPEGReader()
+    elif fileName.endswith('tif') or fileName.endswith('tiff'):
+        reader = vtk.vtkTIFFReader()
     elif fileName.endswith('ply'):
         reader = vtk.vtkPLYReader()
     elif fileName.endswith('pvd'):
