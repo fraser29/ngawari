@@ -189,6 +189,10 @@ class NumpyEncoder(json.JSONEncoder):
             return obj.isoformat()
         if isinstance(obj, timedelta):
             return str(obj)
+        if isinstance(obj, (np.ndarray, list)):
+            return [x.item() if isinstance(x, (np.integer, np.floating)) else x for x in obj]
+        if obj is None:
+            return "None"  # Convert None to string
         return super(NumpyEncoder, self).default(obj)
 
 
