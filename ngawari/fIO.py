@@ -193,9 +193,10 @@ class NumpyEncoder(json.JSONEncoder):
             return [x.item() if isinstance(x, (np.integer, np.floating)) else x for x in obj]
         if obj is None:
             return "None"  # Convert None to string
-        if hasattr(obj, "to_dict"):  # Works for Flask's MultiDict
+        # Handle some bespoke general cases
+        if hasattr(obj, "to_dict"):  
             return json.dumps(obj.to_dict())
-        elif hasattr(obj, "dict"):  # Works for Django's QueryDict
+        elif hasattr(obj, "dict"):  
             return json.dumps(obj.dict())
         elif hasattr(obj, "__iter__") and not isinstance(obj, str):  # Convert iterables like lists/tuples
             return json.dumps(list(obj))
