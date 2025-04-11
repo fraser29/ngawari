@@ -50,7 +50,7 @@ def sortedIDsOfClosestPoints(point, points):
 
 
 def distTwoPoints(a, b):
-    return np.sqrt(np.sum((np.asarray(a) - np.asarray(b)) ** 2))
+    return np.linalg.norm(np.sum((np.asarray(a, dtype=np.float64) - np.asarray(b, dtype=np.float64))))
 
 
 def getIDsOfClosestPoints(pointsA, pointsB):

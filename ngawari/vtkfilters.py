@@ -1831,6 +1831,7 @@ def extractVOI(data, ijkMinMax, sampleRate=(1, 1, 1)):
 
 
 def extractVOI_fromFov(data, fovData):
+    fovData - cleanData(fovData) # To prevent surprises
     bounds = fovData.GetBounds()
     if isVTS(data):
         extent = data.GetExtent()
