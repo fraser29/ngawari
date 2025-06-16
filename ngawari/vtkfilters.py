@@ -1819,9 +1819,11 @@ def extractStructuredSubGrid(data, ijkMinMax=None, sampleRate=(1, 1, 1), TO_INCL
     return extractGrid.GetOutput()
 
 
-def extractVOI(data, ijkMinMax, sampleRate=(1, 1, 1)):
+def extractVOI(data, ijkMinMax=None, sampleRate=(1, 1, 1)):
     extractGrid = vtk.vtkExtractVOI()
     extractGrid.SetInputData(data)
+    if ijkMinMax is None:
+        ijkMinMax = data.GetExtent()
     extractGrid.SetVOI(ijkMinMax[0], ijkMinMax[1], ijkMinMax[2], ijkMinMax[3],
                        ijkMinMax[4], ijkMinMax[5])
     extractGrid.SetSampleRate(sampleRate[0], sampleRate[1], sampleRate[2])
