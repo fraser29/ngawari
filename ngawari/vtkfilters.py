@@ -929,6 +929,50 @@ def clipVolumeToEightPolydataBoxes(data, RETURN_ptIDs):
         return vtpBoxes
 
 
+def roi_line_to_roi_plane(roiLine, resolution):
+    R = getPolyDataMeanFromCenter(roiLine)
+    plane = buildPlaneCentredOnRoi(roiLine, R*3.0, resolution)
+    planeClip = clipPlaneToROI(plane, roiLine)
+    return planeClip
+
+
+def clipPlaneToROI(fullPlane, ROI):
+    """
+    :param fullPlane: a plane covering ROI
+    :param ROI: the ROI
+    :return: plane cliped to pixels within the ROI stencil (polydata)
+    """
+    SCALE = False
+    if ROI.GetNumberOfCells() != 1:
+        raise AttributeError('ROI should be single cell polyline')
+    maxBounds = getMaximumBounds(ROI)
+    if maxBounds < 1.0:
+        SCALE = True
+        scalef = 1000.0 / maxBounds
+        ROI = filterTransformPolyData(ROI, scale=[scalef,scalef,scalef])
+        ROI = filterVtpSpline(ROI, getMaximumBounds(ROI)*0.001)
+        fullPlane = filterTransformPolyData(fullPlane, scale=[scalef,scalef,scalef])
+    else:
+        ROI = filterVtpSpline(ROI, maxBounds*0.001)
+    loop = vtk.vtkImplicitSelectionLoop()
+    loop.SetLoop(ROI.GetPoints())
+    extract = vtk.vtkExtractGeometry()
+    extract.SetInputData(fullPlane)
+    extract.SetImplicitFunction(loop)
+    connect = vtk.vtkConnectivityFilter()
+    connect.SetInputConnection(extract.GetOutputPort())
+    connect.SetExtractionModeToClosestPointRegion()
+    connect.SetClosestPoint(ROI.GetPoints().GetPoint(0))
+    connect.Update()
+    clipOut = filterExtractSurface(connect.GetOutput())
+    if clipOut.GetNumberOfPoints() == 0:
+        raise ValueError("Error - try with different size plane")
+    if SCALE:
+        clipOut = filterTransformPolyData(clipOut, scale=[1.0/scalef,1.0/scalef,1.0/scalef])
+    return clipOut
+
+
+
 
 
 # ======================================================================================================================
