@@ -40,7 +40,7 @@ For more detailed usage instructions, please refer to the documentation.
 
 ## Documentation #TODO
 
-Full documentation is available at [https://ngawari.readthedocs.io](https://ngawari.readthedocs.io)
+Full documentation is available at [https://fraser29.github.io/ngawari/](https://fraser29.github.io/ngawari/)
 
 ## Contributing
 
