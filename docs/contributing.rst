@@ -51,35 +51,6 @@ Example:
        """
        return np.linalg.norm(point_b - point_a)
 
-Documentation
-------------
-
-All public functions should have docstrings following the NumPy style:
-
-.. code-block:: python
-
-   def my_function(param1: str, param2: int = 10) -> bool:
-       """
-       Brief description of what the function does.
-       
-       Parameters
-       ----------
-       param1 : str
-           Description of param1
-       param2 : int, optional
-           Description of param2, by default 10
-           
-       Returns
-       -------
-       bool
-           Description of return value
-           
-       Examples
-       --------
-       >>> my_function("test", 5)
-       True
-       """
-       pass
 
 Testing
 -------
@@ -161,8 +132,8 @@ Example:
    
    **Minimal Example:**
    ```python
-   import ngawari as ng
-   result = ng.some_function(input_data)
+   from ngawari import ftk, fIO, vtkfilters
+   result = ftk.some_function(input_data)
    print(result)  # Expected: A, Got: B
    ```
 

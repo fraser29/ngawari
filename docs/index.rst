@@ -31,20 +31,35 @@ Quick Start
 
 .. code-block:: python
 
-   import ngawari as ng
-   import vtk
+   from ngawari import ftk, fIO, vtkfilters
+   import numpy as np
    
    # Create a simple sphere
-   sphere = ng.buildSphereSource([0, 0, 0], radius=1.0)
+   sphere = vtkfilters.buildSphereSource([0, 0, 0], radius=1.0)
    
    # Get points as numpy array
-   points = ng.getPtsAsNumpy(sphere)
+   points = vtkfilters.getPtsAsNumpy(sphere)
    
    # Add a scalar array
-   ng.setArrayFromNumpy(sphere, points[:, 0], "x_coords", SET_SCALAR=True)
+   vtkfilters.setArrayFromNumpy(sphere, points[:, 0], "x_coords", SET_SCALAR=True)
    
    # Apply a filter
-   smoothed = ng.smoothTris(sphere, iterations=10)
+   smoothed = vtkfilters.smoothTris(sphere, iterations=10)
+
+   # Write to file
+   fIO.writeVTKFile(smoothed, "smoothed_sphere.vtp")
+
+   # Build image over sphere:
+   image = vtkfilters.buildRawImageDataFromPolyData(smoothed, res=[0.1,0.1,0.1])
+
+   # Add a scalar array to the image
+   vtkfilters.setArrayFromNumpy(image, np.random.rand(image.GetNumberOfPoints()), "random_scalar", SET_SCALAR=True)
+
+   # Null scalars outside sphere
+   image_nulled = vtkfilters.filterNullOutsideSurface(image, smoothed)
+
+   # Write to file
+   fIO.writeVTKFile(image_nulled, "image_over_sphere.vti")
 
 Installation
 ------------

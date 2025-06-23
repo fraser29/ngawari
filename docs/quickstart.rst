@@ -149,10 +149,6 @@ Vector operations:
    vector = [1, 2, 3]
    normalized = ftk.normaliseArray(vector)
    
-   # Dot product
-   vec1 = [1, 0, 0]
-   vec2 = [0, 1, 0]
-   dot_product = ftk.fcdot(vec1, vec2)
 
 Complete Example
 ---------------
@@ -161,27 +157,36 @@ Here's a complete example that demonstrates several features:
 
 .. code-block:: python
 
+
    from ngawari import ftk, fIO, vtkfilters
    import numpy as np
    
-   # Create a sphere
+   # Create a simple sphere
    sphere = vtkfilters.buildSphereSource([0, 0, 0], radius=1.0)
    
-   # Get points and add scalar data
+   # Get points as numpy array
    points = vtkfilters.getPtsAsNumpy(sphere)
-   distances = np.linalg.norm(points, axis=1)
-   vtkfilters.setArrayFromNumpy(sphere, distances, "distance_from_origin", SET_SCALAR=True)
    
-   # Apply smoothing
-   smoothed = vtkfilters.smoothTris(sphere, iterations=5)
+   # Add a scalar array
+   vtkfilters.setArrayFromNumpy(sphere, points[:, 0], "x_coords", SET_SCALAR=True)
    
-   # Clip with a plane
-   clipped = vtkfilters.clipDataByPlane(smoothed, [0, 0, 0], [1, 0, 0])
-   
-   # Save the result
-   fIO.writeVTKFile(clipped, "clipped_sphere.vtp")
-   
-   print(f"Final result has {clipped.GetNumberOfPoints()} points")
+   # Apply a filter
+   smoothed = vtkfilters.smoothTris(sphere, iterations=10)
+
+   # Write to file
+   fIO.writeVTKFile(smoothed, "smoothed_sphere.vtp")
+
+   # Build image over sphere:
+   image = vtkfilters.buildRawImageDataFromPolyData(smoothed, res=[0.1,0.1,0.1])
+
+   # Add a scalar array to the image
+   vtkfilters.setArrayFromNumpy(image, np.random.rand(image.GetNumberOfPoints()), "random_scalar", SET_SCALAR=True)
+
+   # Null scalars outside sphere
+   image_nulled = vtkfilters.filterNullOutsideSurface(image, smoothed)
+
+   # Write to file
+   fIO.writeVTKFile(image_nulled, "image_over_sphere.vti")
 
 Next Steps
 ----------

@@ -56,41 +56,16 @@ After installation, you can verify that Ngawari is working correctly:
 
 .. code-block:: python
 
-   import ngawari as ng
-   import vtk
+   from ngawari import ftk, fIO, vtkfilters
    
    # Create a simple test
-   sphere = ng.buildSphereSource([0, 0, 0], radius=1.0)
+   sphere = vtkfilters.buildSphereSource([0, 0, 0], radius=1.0)
    print(f"Sphere created with {sphere.GetNumberOfPoints()} points")
    
    # Test array operations
-   points = ng.getPtsAsNumpy(sphere)
+   points = vtkfilters.getPtsAsNumpy(sphere)
    print(f"Points shape: {points.shape}")
 
-Troubleshooting
----------------
-
-VTK Installation Issues
-~~~~~~~~~~~~~~~~~~~~~~~
-
-If you encounter issues with VTK installation:
-
-1. **Windows**: Install VTK using conda:
-   .. code-block:: bash
-      conda install vtk
-
-2. **Linux/macOS**: Install system dependencies first:
-   .. code-block:: bash
-      # Ubuntu/Debian
-      sudo apt-get install python3-vtk7
-      
-      # macOS
-      brew install vtk
-
-3. **Alternative**: Use conda for all dependencies:
-   .. code-block:: bash
-      conda install -c conda-forge vtk numpy scipy
-      pip install ngawari
 
 Version Compatibility
 ~~~~~~~~~~~~~~~~~~~~
