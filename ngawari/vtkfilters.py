@@ -929,6 +929,50 @@ def clipVolumeToEightPolydataBoxes(data, RETURN_ptIDs):
         return vtpBoxes
 
 
+def roi_line_to_roi_plane(roiLine, resolution):
+    R = getPolyDataMeanFromCenter(roiLine)
+    plane = buildPlaneCentredOnRoi(roiLine, R*3.0, resolution)
+    planeClip = clipPlaneToROI(plane, roiLine)
+    return planeClip
+
+
+def clipPlaneToROI(fullPlane, ROI):
+    """
+    :param fullPlane: a plane covering ROI
+    :param ROI: the ROI
+    :return: plane cliped to pixels within the ROI stencil (polydata)
+    """
+    SCALE = False
+    if ROI.GetNumberOfCells() != 1:
+        raise AttributeError('ROI should be single cell polyline')
+    maxBounds = getMaximumBounds(ROI)
+    if maxBounds < 1.0:
+        SCALE = True
+        scalef = 1000.0 / maxBounds
+        ROI = filterTransformPolyData(ROI, scale=[scalef,scalef,scalef])
+        ROI = filterVtpSpline(ROI, getMaximumBounds(ROI)*0.001)
+        fullPlane = filterTransformPolyData(fullPlane, scale=[scalef,scalef,scalef])
+    else:
+        ROI = filterVtpSpline(ROI, maxBounds*0.001)
+    loop = vtk.vtkImplicitSelectionLoop()
+    loop.SetLoop(ROI.GetPoints())
+    extract = vtk.vtkExtractGeometry()
+    extract.SetInputData(fullPlane)
+    extract.SetImplicitFunction(loop)
+    connect = vtk.vtkConnectivityFilter()
+    connect.SetInputConnection(extract.GetOutputPort())
+    connect.SetExtractionModeToClosestPointRegion()
+    connect.SetClosestPoint(ROI.GetPoints().GetPoint(0))
+    connect.Update()
+    clipOut = filterExtractSurface(connect.GetOutput())
+    if clipOut.GetNumberOfPoints() == 0:
+        raise ValueError("Error - try with different size plane")
+    if SCALE:
+        clipOut = filterTransformPolyData(clipOut, scale=[1.0/scalef,1.0/scalef,1.0/scalef])
+    return clipOut
+
+
+
 
 
 # ======================================================================================================================
@@ -1781,6 +1825,17 @@ def __getTriangleCenterAndNormal(triCell):
 
 
 def addNormalsToPolyData(data, REV=False, SPLITTING=True, MANIFOLD=True):
+    """
+    Add normals to polydata.
+    This is a wrapper around vtkPolyDataNormals.
+    See the vtk documentation for more details.
+
+    :param data: vtkPolyData
+    :param REV: bool - reverse normals
+    :param SPLITTING: bool - split normals
+    :param MANIFOLD: bool - manifold normals
+    :return: vtkPolyData with normals
+    """
     normFilter = vtk.vtkPolyDataNormals()
     normFilter.SetInputData(data)
     normFilter.SetFeatureAngle(60.0)
@@ -1797,6 +1852,14 @@ def addNormalsToPolyData(data, REV=False, SPLITTING=True, MANIFOLD=True):
 #           EDGES
 # ======================================================================================================================
 def getBoundaryEdges(data):
+    """
+    Get boundary edges of polydata.
+    This is a wrapper around vtkFeatureEdges.
+    See the vtk documentation for more details.
+
+    :param data: vtkPolyData
+    :return: vtkPolyData with boundary edges
+    """
     fef = vtk.vtkFeatureEdges()
     fef.SetInputData(data)
     fef.BoundaryEdgesOn()
@@ -1831,6 +1894,17 @@ def getConnectedCellIds(dataMesh, searchId):
 #           VOLUME FILTERS
 # ======================================================================================================================
 def extractStructuredSubGrid(data, ijkMinMax=None, sampleRate=(1, 1, 1), TO_INCLUDE_BOUNDARY=False):
+    """
+    Extract a structured subgrid from a vtkDataObject.
+    This is a wrapper around vtkExtractGrid.
+    See the vtk documentation for more details.
+
+    :param data: vtkDataObject
+    :param ijkMinMax: tuple of ints - min and max indices
+    :param sampleRate: tuple of ints - sample rate
+    :param TO_INCLUDE_BOUNDARY: bool - include boundary
+    :return: vtkDataObject
+    """
     if type(sampleRate) == int:
         sampleRate = (sampleRate, sampleRate, sampleRate)
     if ijkMinMax is None:
@@ -1848,9 +1922,21 @@ def extractStructuredSubGrid(data, ijkMinMax=None, sampleRate=(1, 1, 1), TO_INCL
     return extractGrid.GetOutput()
 
 
-def extractVOI(data, ijkMinMax, sampleRate=(1, 1, 1)):
+def extractVOI(data, ijkMinMax=None, sampleRate=(1, 1, 1)):
+    """
+    Extract a volume of interest from a vtkImageData.
+    This is a wrapper around vtkExtractVOI.
+    See the vtk documentation for more details.
+
+    :param data: vtkImageData
+    :param ijkMinMax: tuple of ints - min and max indices
+    :param sampleRate: tuple of ints - sample rate
+    :return: vtkDataObject
+    """
     extractGrid = vtk.vtkExtractVOI()
     extractGrid.SetInputData(data)
+    if ijkMinMax is None:
+        ijkMinMax = data.GetExtent()
     extractGrid.SetVOI(ijkMinMax[0], ijkMinMax[1], ijkMinMax[2], ijkMinMax[3],
                        ijkMinMax[4], ijkMinMax[5])
     extractGrid.SetSampleRate(sampleRate[0], sampleRate[1], sampleRate[2])
@@ -1860,6 +1946,16 @@ def extractVOI(data, ijkMinMax, sampleRate=(1, 1, 1)):
 
 
 def extractVOI_fromFov(data, fovData):
+    """
+    Extract a volume of interest from a vtkImageData.
+    This is a wrapper around vtkExtractVOI.
+    See the vtk documentation for more details.
+    Locally this runs extractVOI using the bounds of the fovData.
+
+    :param data: vtkImageData
+    :param fovData: vtkDataObject - volume of interest
+    :return: vtkImageData
+    """
     fovData = cleanData(fovData) # To prevent surprises
     bounds = fovData.GetBounds()
     if isVTS(data):
@@ -1907,6 +2003,17 @@ def extractVOI_fromFov(data, fovData):
 
 
 def filterNullOutsideSurface(vtkObj, surfObj, arrayListToNull=None, tfArray=None):
+    """
+    Null out arrays outside a surface.
+    This uses filterGetPointsInsideSurface to get a mask and then nulls out arrays outside the surface.
+    See the vtk documentation for more details.
+
+    :param vtkObj: vtkImageData or similar - data to null
+    :param surfObj: vtkPolyData - surface
+    :param arrayListToNull: list of strings - arrays to null
+    :param tfArray: numpy array - mask
+    :return: vtkPolyData
+    """
     if tfArray is None:
         tfArray = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
     if arrayListToNull is None:
@@ -1921,6 +2028,17 @@ def filterNullOutsideSurface(vtkObj, surfObj, arrayListToNull=None, tfArray=None
 
 
 def filterNullInsideSurface(vtkObj, surfObj, arrayListToNull=None, nullVal=0.0):
+    """
+    Null out arrays inside a surface.
+    This uses filterGetPointsInsideSurface to get a mask and then nulls out arrays inside the surface.
+    See the vtk documentation for more details.
+
+    :param vtkObj: vtkImageData or similar - data to null
+    :param surfObj: vtkPolyData - surface
+    :param arrayListToNull: list of strings - arrays to null
+    :param nullVal: float - value to null
+    :return: vtkPolyData
+    """
     tfA = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
     if arrayListToNull is None:
         arrayListToNull = getArrayNames(vtkObj)
@@ -1940,9 +2058,12 @@ def filterNullInsideSurface(vtkObj, surfObj, arrayListToNull=None, nullVal=0.0):
 def filterResampleToDataset(src, destData, PASS_POINTS=False):
     """
     Resample data from src onto destData
+    This is a wrapper around vtkProbeFilter.
+    See the vtk documentation for more details.
+
     :param src: source vtkObj
     :param destData: destination vtkObj
-    :param PASS_POINTS: bool [False] set true to pass point data to output
+    :param PASS_POINTS: bool [False] set true to pass point data from 'destData' to output
     :return: destData with interpolated point data from src
     """
     pf = vtk.vtkProbeFilter()
@@ -1953,20 +2074,18 @@ def filterResampleToDataset(src, destData, PASS_POINTS=False):
     pf.Update()
     return pf.GetOutput()
 
-def filterResampleDictToDataset(srcDict, destData):
-    """
-    Run filterResampleToDataset for every src in srcDict to static destData
-    :param srcDict: dictionary of timekey: vtkObj
-    :param destData: destination vtkObj - static
-    :return: dictionary of timeKey:destVtkObj with src point data
-    """
-    dictOut = {}
-    for iK in srcDict.keys():
-        dictOut[iK] = filterResampleToDataset(srcDict[iK], destData)
-    return dictOut
-
 
 def filterResampleToImage(vtsObj, dims=None, bounder=None):
+    """
+    Resample a vtkStructuredGrid or similar to an image.
+    This is a wrapper around vtkResampleToImage.
+    See the vtk documentation for more details.
+
+    :param vtsObj: vtkStructuredGrid or similar
+    :param dims: tuple of ints - dimensions of image. Default is to use the bounds of the vtsObj and calculated resolution.
+    :param bounder: vtkPolyData - bounding box. Default is to use the bounds of the vtsObj.
+    :return: vtkImageData
+    """
     rif = vtk.vtkResampleToImage()
     rif.SetInputDataObject(vtsObj)
     if dims is None:
@@ -2182,6 +2301,17 @@ def filterGetArrayValuesWithinSurface(data, surf3D, arrayName):
 
 
 def getDataWithThreshold(data, thresholdArrayName, thresholdLower, thresholdUpper):
+    """
+    Get data within a threshold.
+    This is a wrapper around vtkThreshold.
+    See the vtk documentation for more details.
+
+    :param data: vtkImageData or similar
+    :param thresholdArrayName: string - name of array to threshold
+    :param thresholdLower: float - lower threshold
+    :param thresholdUpper: float - upper threshold
+    :return: vtkUnstructuredGrid
+    """
     thresholder = vtk.vtkThreshold()
     thresholder.SetInputData(data)
     thresholder.SetLowerThreshold(thresholdLower)
@@ -2192,7 +2322,17 @@ def getDataWithThreshold(data, thresholdArrayName, thresholdLower, thresholdUppe
 
 
 def countPointsInVti(vtiObj, objWithPoints, npArray=None, countArrayName="count", weightingArray=None):
-    ''' Add cell array "count" to vti with count of points in cell'''
+    """
+    Add cell array "count" to vti with count of points from objWithPoints per cell
+        
+    
+    :param vtiObj: vtkImageData or similar
+    :param objWithPoints: vtkPolyData or similar
+    :param npArray: numpy array - array to add count points to. default None
+    :param countArrayName: string - name of array to add - default "count"
+    :param weightingArray: string - name of array to weight points by - default None
+    :return: vtkImageData with count array
+    """
     cellLocator = vtk.vtkCellLocator()
     cellLocator.SetDataSet(vtiObj)
     cellLocator.BuildLocator()
@@ -2234,6 +2374,12 @@ def __getConnectedRegionLargest_UnStruct(data: vtk.vtkDataObject) -> vtk.vtkPoly
 
 
 def getConnectedRegionLargest(data: vtk.vtkDataObject) -> vtk.vtkPolyData:
+    """
+    Get the largest connected region from a vtkDataObject.
+    
+    :param data: vtkDataObject
+    :return: vtkPolyData
+    """
     if not data.IsA('vtkPolyData'):
         return __getConnectedRegionLargest_UnStruct(data)
     connectFilter = vtk.vtkPolyDataConnectivityFilter()
@@ -2245,6 +2391,13 @@ def getConnectedRegionLargest(data: vtk.vtkDataObject) -> vtk.vtkPolyData:
 
 
 def getConnectedRegionContaining(data: vtk.vtkDataObject, vtkId: int) -> vtk.vtkPolyData:
+    """
+    Get the connected region containing a given vtkId.
+    
+    :param data: vtkDataObject
+    :param vtkId: int
+    :return: vtkPolyData
+    """
     connectFilter = vtk.vtkPolyDataConnectivityFilter()
     connectFilter.SetInputData(data)
     connectFilter.AddSeed(vtkId)
@@ -2252,7 +2405,16 @@ def getConnectedRegionContaining(data: vtk.vtkDataObject, vtkId: int) -> vtk.vtk
     return connectFilter.GetOutput()
 
 
-def getConnectedRegionClosestToX(data: vtk.vtkDataObject, X: np.ndarray) -> vtk.vtkPolyData:
+def getConnectedRegionClosestToX(data: vtk.vtkDataObject, X: np.ndarray) -> vtk.vtkDataObject:
+    """
+    Get the connected region closest to a given point.
+    
+    :param data: vtkDataObject
+    :param X: numpy array - point coordinates
+    :return: vtkDataObject - vtkPolyData or vtkUnstructuredGrid
+    """
+    if isinstance(data, vtk.vtkUnstructuredGrid):
+        return getConnectedRegionClosestToX_UnStruct(data, X)
     connectFilter = vtk.vtkPolyDataConnectivityFilter()
     connectFilter.SetInputData(data)
     connectFilter.SetExtractionModeToClosestPointRegion()
@@ -2261,7 +2423,7 @@ def getConnectedRegionClosestToX(data: vtk.vtkDataObject, X: np.ndarray) -> vtk.
     return connectFilter.GetOutput()
 
 
-def getConnectedRegionClosestToX_UnStruct(data: vtk.vtkDataObject, X: np.ndarray) -> vtk.vtkPolyData:
+def getConnectedRegionClosestToX_UnStruct(data: vtk.vtkDataObject, X: np.ndarray) -> vtk.vtkDataObject:
     connectFilter = vtk.vtkConnectivityFilter()
     connectFilter.SetInputData(data)
     connectFilter.SetExtractionModeToClosestPointRegion()
