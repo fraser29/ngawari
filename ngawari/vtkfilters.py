@@ -1729,6 +1729,35 @@ def getVolumeSurfaceAreaOfPolyData(data):
     return (massFilter.GetVolume(), massFilter.GetSurfaceArea())
 
 
+def mergeSurfsByPointsInsideVti(surf1: Union[vtk.vtkDataObject, list], surf2=None, res=0.001):
+    """An alternative "boolean union" method. 
+
+    Args:
+        surf1 (Union[vtk.vtkDataObject, list]): surfA or list of surfaces to bool union
+        surf2 (vtk.vtkDataObject, optional): surfB. Defaults to None if surfA is list.
+        res (float, optional): resolution to perform merging. Defaults to 0.001.
+
+    Returns:
+        vtk.vtkDataObject: merged surface as polydata. 
+    """
+    if type(surf1) == list:
+        ppfull = appendPolyDataList(surf1)
+    else:
+        ppfull = appendPolyData(surf1, surf2)
+        surf1 = [surf1, surf2]
+    oo = getOutline(ppfull)
+    ii = buildRawImageDataFromOutline(oo, res, pad=5)
+    for k1, iSurf in enumerate(surf1):
+        tf1 = filterGetEnclosedPts(ii, iSurf, 'tf')
+        if k1 == 0:
+            A = tf1
+        else:
+            A = A|tf1
+    A = np.reshape(A, ii.GetDimensions(), 'F')
+    addNpArray(ii, A.astype(float), 'Inside', SET_SCALAR=True, IS_3D=True)
+    return getConnectedRegionLargest(contourFilter(ii, 0.5))
+
+
 # ======================================================================================================================
 #           TRIANGLE AREA & NORMAL
 # ======================================================================================================================

@@ -420,7 +420,7 @@ def buildCircle3D(X, N, R, nPts=50):
     return fc_circle.T
 
 
-def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude, max_iterations=1000, random_state=None):
+def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude, max_iterations=1000, VERBOSE=False):
     """
     Fits a plane to a 3D point cloud using RANSAC.
         Choose random point
@@ -448,11 +448,13 @@ def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude
     target_inliers = int(total_points * planeFractionToInclude)
     rndIDs = list(range(total_points))
     np.random.shuffle(rndIDs)
+    if VERBOSE:
+        print(f"Have {total_points} total_points. Target inliers={target_inliers}")
     for k1 in range(min(total_points, max_iterations)):
         # Randomly sample point - get closest 2 neighbours
         rndID = rndIDs[k1]
         idists = distPointPoints(pts[rndID], pts)
-        sampleIDs = np.argsort(idists)[:3]
+        sampleIDs = np.argsort(idists)[[1,3,6]]
         samplePts = pts[sampleIDs]
 
         # Calculate plane parameters using these points
@@ -464,26 +466,29 @@ def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude
 
         # Calculate distances from points to plane
         distances = np.abs(np.dot(pts - plane_center, plane_normal))
-        
-
 
         # Count inliers
         inlier_mask = distances < planeSearchDist_abs
         num_inliers = np.sum(inlier_mask)
-        if k1 > 0:
-            if num_inliers > 5:
-                # Add a penalty if all pts at boundary
-                selectedPts = pts[inlier_mask,:]
-                distFromCenter = min(distPointPoints(np.mean(selectedPts, axis=0), selectedPts))
-                if distFromCenter > planeSearchDist_abs:
-                    continue
+        # if k1 > 0:
+        #     if num_inliers > 5:
+        #         # Add a penalty if all pts at boundary
+        #         selectedPts = pts[inlier_mask,:]
+        #         distFromCenter = min(distPointPoints(np.mean(selectedPts, axis=0), selectedPts))
+        #         if distFromCenter > planeSearchDist_abs:
+        #             if DEBUG: 
+        #                 print(f"Dist from center {distFromCenter:0.4f} > searchDist {planeSearchDist_abs} - continue")
+        #             continue
 
         # Update best model if necessary
         if (best_plane_normal is None) or ((num_inliers >= target_inliers) and (num_inliers > best_num_inliers)):
-            print(f"    Update best num_inliers = {num_inliers} ({num_inliers/total_points*100:0.2f}%)")
+            if VERBOSE:
+                print(f"    Update best num_inliers = {num_inliers} ({num_inliers/total_points*100:0.2f}%). best_plane_normal={plane_normal}")
             best_plane_normal = plane_normal
             best_plane_center = plane_center
             best_num_inliers = num_inliers
+    if VERBOSE:
+        print(f"It:{k1} - best plane norm = {best_plane_normal}")
     return best_plane_normal, best_plane_center
 
 
