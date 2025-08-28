@@ -1244,6 +1244,24 @@ def cleanData(data: vtk.vtkDataObject, tolerance: float = 0.0, DO_POINT_MERGING:
     return cleaner.GetOutput()
 
 
+def reduceNumberOfPoints(data, targetNumberOfPoints):
+    totIN = data.GetNumberOfPoints()
+    if targetNumberOfPoints >= totIN:
+        return data
+    IDS = np.random.choice(totIN, size=targetNumberOfPoints, replace=False)
+    try:
+        id_list = idListToVtkIDs(IDS)
+        extract = vtk.vtkExtractPoints()
+        extract.SetInputData(data)
+        extract.SetPointIds(id_list)
+        extract.Update()
+        return extract.GetOutput()
+    except AttributeError:
+        pts = getPtsAsNumpy(data)
+        pts_ = pts[IDS]
+        return buildPolydataFromXYZ(pts_)
+
+
 def filterBoolean(dataA, dataB, booleanOperationType):
     """
     Perform a boolean operation on two datasets. Ensure that the data is triangulated.
@@ -1512,7 +1530,7 @@ def multiblockToList(data):
 def idListToVtkIDs(idsList):
     ids = vtk.vtkIdList()
     for i in idsList:
-        ids.InsertNextId(i)
+        ids.InsertNextId(int(i))
     return ids
 
 
