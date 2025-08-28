@@ -2207,6 +2207,28 @@ def filterVtiMedian(vtiObj, filterKernalSize=3):
     mf.Update()
     return mf.GetOutput()
 
+
+def filterImageGradient(data, arrayNameToCalcGradient, outputArrayName=None):
+    """ 
+    Calculate the gradient of an image array.
+    (du/dx, du/dy, du/dz, dv/dx, dv/dy, dv/dz, dw/dx, dw/dy, dw/dz)
+
+    :param data: vtkImageData
+    :param arrayNameToCalcGradient: string - name of array to calculate gradient
+    :param outputArrayName: string - name of output array (default is arrayNameToCalcGradient + '-Gradient')
+
+    :return: vtkImageData with gradient array
+    """
+    if outputArrayName is None:
+        outputArrayName = arrayNameToCalcGradient + '-Gradient'
+    gradientFilter = vtk.vtkGradientFilter()
+    gradientFilter.SetInputData(data)
+    gradientFilter.SetInputArrayToProcess(0, 0, 0, 0, arrayNameToCalcGradient)
+    gradientFilter.SetResultArrayName(outputArrayName)
+    gradientFilter.Update()
+    return gradientFilter.GetOutput()
+
+
 # def anisotropicDiffusion(vtiObj):
 #     filtAD = vtk.vtkImageAnisotropicDiffusion3D()
 #     filtAD.SetInputData(vtiObj)
