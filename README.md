@@ -55,7 +55,7 @@ fIO.writeVTKFile(image_nulled, "image_over_sphere.vti")
 
 For more detailed usage instructions, please refer to the documentation.
 
-## Documentation #TODO
+## Documentation 
 
 Full documentation is available at [https://fraser29.github.io/ngawari/](https://fraser29.github.io/ngawari/)
 
