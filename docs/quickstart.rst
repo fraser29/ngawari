@@ -109,7 +109,35 @@ Clip by sphere:
 File I/O
 --------
 
-Save data to VTK format - file extension is used for format:
+Save data to VTK format - file extension is used for format. Supported formats are:
+**Write**
+- .vtp
+- .vts
+- .vtu
+- .stl
+- .vti
+- .mhd
+- .mha
+- .nii
+
+**Read**
+- .vtp
+- .vts
+- .vtu
+- .stl
+- .vti
+- .vtk
+- .vtm
+- .nrrd
+- .mha
+- .ply
+- .nii
+- .nii.gz
+- .png
+- .jpg / .jpeg
+- .tif / .tiff
+
+Also supports .pvd files for reading and writing - used for e.g. time series data.
 
 .. code-block:: python
 
