@@ -110,7 +110,9 @@ File I/O
 --------
 
 Save data to VTK format - file extension is used for format. Supported formats are:
+
 **Write**
+
 - .vtp
 - .vts
 - .vtu
@@ -121,6 +123,7 @@ Save data to VTK format - file extension is used for format. Supported formats a
 - .nii
 
 **Read**
+
 - .vtp
 - .vts
 - .vtu
