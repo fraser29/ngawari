@@ -221,8 +221,11 @@ def projectPtsToPlane(pts, plane):
 
 def project3DPointsToPlanarCoordinateSystem(pts, planeNorm=None):
     origin = np.mean(pts, axis=0)
-    normal = planeNorm / np.linalg.norm(planeNorm)
-    projected_points = projectPtsToPlane(pts, (planeNorm, origin))
+    if planeNorm is None:
+        normal = fitPlaneToPoints(pts)[:3]
+    else:
+        normal = planeNorm / np.linalg.norm(planeNorm)
+    projected_points = projectPtsToPlane(pts, (normal, origin))
     # Create a local coordinate system on the plane
     # Find two vectors in the plane
     u = projected_points[1] - projected_points[0]
@@ -357,12 +360,7 @@ def fitCircleRANSAC(x, y, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
 
 def fitCircleRANSAC3D_xyz(xyz, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
                       MAX_ITERATIONS, EXCLUDE_INNERS=False, DEBUG=False):
-    return fitCircleRANSAC3D(xyz[:,0],xyz[:,1],xyz[:,2], tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
-                      MAX_ITERATIONS, EXCLUDE_INNERS=False, DEBUG=False )
-
-
-def fitCircleRANSAC3D(x, y, z, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
-                      MAX_ITERATIONS, EXCLUDE_INNERS=False, DEBUG=False):
+    xyz = __forcePts_nx3(xyz)
     """
     Rotate to plane of best fit, then 2D fit, rotate results back to 3D
         Return fitted point, R, norm
@@ -374,9 +372,9 @@ def fitCircleRANSAC3D(x, y, z, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
     :param MAX_ITERATIONS:
     :param EXCLUDE_INNERS:
     :param DEBUG:
-    :return:  xf, yf, zf, rf, normalVec
+    :return:  center, rf, normalVec
     """
-    xy, e1, e2, origin = project3DPointsToPlanarCoordinateSystem(np.vstack((x, y, z)))
+    xy, e1, e2, origin = project3DPointsToPlanarCoordinateSystem(xyz)
     xf, yf, rf = fitCircleRANSAC(xy[:, 0], xy[:, 1], tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
                                  MAX_ITERATIONS, EXCLUDE_INNERS, DEBUG)
     xyzf = convert2DPointsTo3DCoordinateSystem([xf, yf], e1, e2, origin)
@@ -470,16 +468,6 @@ def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude
         # Count inliers
         inlier_mask = distances < planeSearchDist_abs
         num_inliers = np.sum(inlier_mask)
-        # if k1 > 0:
-        #     if num_inliers > 5:
-        #         # Add a penalty if all pts at boundary
-        #         selectedPts = pts[inlier_mask,:]
-        #         distFromCenter = min(distPointPoints(np.mean(selectedPts, axis=0), selectedPts))
-        #         if distFromCenter > planeSearchDist_abs:
-        #             if DEBUG: 
-        #                 print(f"Dist from center {distFromCenter:0.4f} > searchDist {planeSearchDist_abs} - continue")
-        #             continue
-
         # Update best model if necessary
         if (best_plane_normal is None) or ((num_inliers >= target_inliers) and (num_inliers > best_num_inliers)):
             if VERBOSE:
@@ -653,23 +641,6 @@ def splinePoints(xyz, nSplinePts, periodic=0, RETURN_NUMPY=False, smooth=0, u=No
     if RETURN_NUMPY:
         return np.array(newPts).T
     return newPts
-
-
-def splinePoints_RansacSmooth(xyz, periodic=0, RETURN_NUMPY=False):
-    """
-     returns list, shape (3, n), unless ask for numpy then transpose
-    """
-    pts = np.asarray(xyz)
-
-    if periodic>0:
-        smooth = 0.0
-        pts = np.vstack((pts, pts[0]))
-    pts = pts.transpose()
-    tck, u = interpolate.splprep(pts, per=periodic)
-    uu = np.linspace(u.min(), u.max(), len(xyz))
-    newPts = interpolate.splev(uu, tck, der=1)
-    print(np.sum(np.sqrt(np.power(newPts, 2.0))))
-
 
 
 def splineFunction(x, y, kind):

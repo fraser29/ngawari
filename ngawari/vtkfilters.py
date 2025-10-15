@@ -1322,7 +1322,7 @@ def filterVtpSpline(data, spacing=None, nPoints=None, smoothFactor=None):
     sf = vtk.vtkSplineFilter()
     sf.SetInputData(data)
     if nPoints is not None:
-        sf.SetNumberOfSubdivisions(nPoints)
+        sf.SetNumberOfSubdivisions(nPoints-1)
         spacing = ftk.distTwoPoints(p0, pE) / nPoints
     else:
         sf.SetSubdivideToLength()
@@ -2203,7 +2203,10 @@ def filterResliceImage(vtiObj, X, normalVector, guidingVector=None,
 def filterVtiMedian(vtiObj, filterKernalSize=3):
     mf = vtk.vtkImageMedian3D()
     mf.SetInputData(vtiObj)
-    mf.SetKernelSize(filterKernalSize,filterKernalSize,filterKernalSize)
+    try:
+        mf.SetKernelSize(filterKernalSize[0],filterKernalSize[1],filterKernalSize[2])
+    except TypeError:
+        mf.SetKernelSize(filterKernalSize,filterKernalSize,filterKernalSize)
     mf.Update()
     return mf.GetOutput()
 
@@ -2229,15 +2232,15 @@ def filterImageGradient(data, arrayNameToCalcGradient, outputArrayName=None):
     return gradientFilter.GetOutput()
 
 
-# def anisotropicDiffusion(vtiObj):
-#     filtAD = vtk.vtkImageAnisotropicDiffusion3D()
-#     filtAD.SetInputData(vtiObj)
-#     filtAD.CornersOn()
-#     filtAD.SetNumberOfIterations(5)
-#     filtAD.SetDiffusionFactor(0.10)
-#     filtAD.SetDiffusionThreshold(10)
-#     filtAD.Update()
-#     return filtAD.GetOutput()
+def filterAnisotropicDiffusion(vtiObj, diffusionFactor=1.0, iterations=5):
+    filtAD = vtk.vtkImageAnisotropicDiffusion3D()
+    filtAD.SetInputData(vtiObj)
+    filtAD.SetNumberOfIterations(iterations)
+    filtAD.SetDiffusionFactor(diffusionFactor)
+    filtAD.SetDiffusionThreshold(10)
+    filtAD.Update()
+    return filtAD.GetOutput()
+
 
 def filterSurfaceToImageStencil(vtiObj, surf3D, fill_value=1):
     # Create stencil from surface
