@@ -2232,12 +2232,12 @@ def filterImageGradient(data, arrayNameToCalcGradient, outputArrayName=None):
     return gradientFilter.GetOutput()
 
 
-def filterAnisotropicDiffusion(vtiObj, diffusionFactor=1.0, iterations=5):
+def filterAnisotropicDiffusion(vtiObj, diffusionThreshold=10, diffusionFactor=1.0, iterations=5):
     filtAD = vtk.vtkImageAnisotropicDiffusion3D()
     filtAD.SetInputData(vtiObj)
     filtAD.SetNumberOfIterations(iterations)
     filtAD.SetDiffusionFactor(diffusionFactor)
-    filtAD.SetDiffusionThreshold(10)
+    filtAD.SetDiffusionThreshold(diffusionThreshold)
     filtAD.Update()
     return filtAD.GetOutput()
 

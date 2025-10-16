@@ -381,6 +381,107 @@ def fitCircleRANSAC3D_xyz(xyz, tolerance, FRACTION_PTS_USE_FOR_CONVERGENCE,
     return xyzf, rf, np.cross(e1, e2)
 
 
+def fit_ellipse_2d(points2d):
+    """
+    Fit an ellipse to 2D points.
+    :param points2d: 2D points to fit ellipse to
+    :return: ellipse parameters (a, b, c, d, e, f) where ax^2 + bxy + cy^2 + dx + ey + f = 0
+    """
+    x = points2d[:,0][:,np.newaxis]
+    y = points2d[:,1][:,np.newaxis]
+    D = np.hstack((x*x, x*y, y*y, x, y, np.ones_like(x)))
+    S = D.T @ D
+    C = np.zeros((6,6))
+    C[0,2] = C[2,0] = 2; C[1,1] = -1
+    E, V = np.linalg.eig(np.linalg.inv(S) @ C)
+    a = V[:, np.argmax(np.real(E))]
+    return np.real(a)
+
+
+import numpy as np
+
+def fit_ellipse_3d(points):
+    """
+    Fit an ellipse to 3D points that approximately lie on a plane.
+
+    Parameters
+    ----------
+    points : (N,3) array_like
+        Input 3D coordinates.
+
+    Returns
+    -------
+    result : dict
+        {
+            'center_3d'   : np.ndarray (3,)  - ellipse center in 3D
+            'normal'      : np.ndarray (3,)  - unit normal of plane
+            'axes'        : np.ndarray (2,)  - [major, minor] axes lengths
+            'angle'       : float            - rotation angle (radians) within plane
+            'u'           : np.ndarray (3,)  - in-plane x-axis
+            'v'           : np.ndarray (3,)  - in-plane y-axis
+            'points_3d'   : (N,3) np.ndarray - fitted ellipse points in 3D
+        }
+    """
+
+    pts = np.asarray(points)
+    assert pts.shape[1] == 3, "Input must be Nx3 array"
+
+    # Fit plane to points 
+    centroid = pts.mean(axis=0)
+    U, S, Vt = np.linalg.svd(pts - centroid)
+    normal = Vt[-1] / np.linalg.norm(Vt[-1])
+
+    # Project to 2D coordinates on plane 
+    ref = np.array([1, 0, 0]) if abs(normal[0]) < 0.9 else np.array([0, 1, 0])
+    u = np.cross(normal, ref); u /= np.linalg.norm(u)
+    v = np.cross(normal, u)
+    rel = pts - centroid
+    x2d = rel @ u
+    y2d = rel @ v
+    xy = np.column_stack((x2d, y2d))
+
+    # Fit 2D ellipse (Halir & Flusser, 1998) 
+    x = xy[:, 0][:, None]
+    y = xy[:, 1][:, None]
+    D = np.hstack((x * x, x * y, y * y, x, y, np.ones_like(x)))
+    S = D.T @ D
+    C = np.zeros((6, 6))
+    C[0, 2] = C[2, 0] = 2
+    C[1, 1] = -1
+    E, V = np.linalg.eig(np.linalg.inv(S) @ C)
+    a = np.real(V[:, np.argmax(np.real(E))])
+
+    # Extract geometric ellipse parameters 
+    b, c, d, f, g, a0 = a[1] / 2, a[2], a[3] / 2, a[4] / 2, a[5], a[0]
+    num = b * b - a0 * c
+    x0 = (c * d - b * f) / num
+    y0 = (a0 * f - b * d) / num
+    up = 2 * (a0 * f * f + c * d * d + g * b * b - 2 * b * d * f - a0 * c * g)
+    down1 = (b * b - a0 * c) * (((c - a0) * np.sqrt(1 + 4 * b * b / ((a0 - c) ** 2))) - (c + a0))
+    down2 = (b * b - a0 * c) * (((a0 - c) * np.sqrt(1 + 4 * b * b / ((a0 - c) ** 2))) - (c + a0))
+    a_len = np.sqrt(abs(up / down1))
+    b_len = np.sqrt(abs(up / down2))
+    angle = 0.5 * np.arctan(2 * b / (a0 - c))
+    center2d = np.array([x0, y0])
+    axes = np.array([a_len, b_len])
+
+    # Map ellipse back to 3D 
+    t = np.linspace(0, 2 * np.pi, 200)
+    R = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+    ellipse_2d = R @ np.vstack((axes[0] * np.cos(t), axes[1] * np.sin(t))) + center2d[:, None]
+    ellipse_3d = centroid + ellipse_2d[0, :, None] * u + ellipse_2d[1, :, None] * v
+
+    return {
+        "center_3d": centroid + center2d[0] * u + center2d[1] * v,
+        "normal": normal,
+        "axes": axes,
+        "angle": angle,
+        "u": u,
+        "v": v,
+        "points_3d": ellipse_3d
+    }
+
+
 # ======================================================================================================================
 #           GEOMETRY
 # ======================================================================================================================
