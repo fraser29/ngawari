@@ -1953,8 +1953,13 @@ def extractVOI(data, ijkMinMax=None, sampleRate=(1, 1, 1)):
     """
     extractGrid = vtk.vtkExtractVOI()
     extractGrid.SetInputData(data)
+    ijkMinMaxOrig = data.GetExtent()
     if ijkMinMax is None:
-        ijkMinMax = data.GetExtent()
+        ijkMinMax = ijkMinMaxOrig
+    for k1 in [0, 2, 4]:
+        ijkMinMax[k1] = max(ijkMinMax[k1], 0)
+    for k2 in [1, 3, 5]:
+        ijkMinMax[k2] = min(ijkMinMax[k2], ijkMinMaxOrig[k2])
     extractGrid.SetVOI(ijkMinMax[0], ijkMinMax[1], ijkMinMax[2], ijkMinMax[3],
                        ijkMinMax[4], ijkMinMax[5])
     extractGrid.SetSampleRate(sampleRate[0], sampleRate[1], sampleRate[2])
