@@ -2296,19 +2296,21 @@ def filterGetPointsInsideSurface(data, surfaceData):
     classify points as inside(t) or outside(f)
     :param data: vtkObj
     :param surfaceData: closed polydata
-    :return: list of true=INSIDE false=OUTSIDE
+    :return: vtkPolyData of points inside surface
     """
-    return filterGetEnclosedPts(data, surfaceData, 'tf')
+    unstructData = filterGetEnclosedPts(data, surfaceData, 'UNSTRUCT')
+    return buildPolydataFromXYZ(getPtsAsNumpy(unstructData))
 def filterGetPointIDsInsideSurface(vtkObj, surf3D):
     return filterGetEnclosedPts(vtkObj, surf3D, 'ID')
 def filterGetPolydataInsideSurface(vtkObj, surf3D):
     return filterGetEnclosedPts(vtkObj, surf3D, 'POLYDATA')
+
 def filterGetEnclosedPts(vtkObj, surf3D, RETURNTYPE="POLYDATA", tol=0.0000000001):
     """
     Get all pts from vtkObj enclosed by surface.
     :param vtkObj: A vtkObj
     :param surf3D: A closed polydata surface
-    :param RETURNTYPE: string - Options: 'POLYDATA' | 'tf' | 'ID'
+    :param RETURNTYPE: string - Options: 'POLYDATA' | 'tf' | 'ID' | 'UNSTRUCT'
     :param tol: default [0.00001]
     :return: polydata of points | np.array of true/false | list of IDs
     """
@@ -2323,16 +2325,11 @@ def filterGetEnclosedPts(vtkObj, surf3D, RETURNTYPE="POLYDATA", tol=0.0000000001
     # enclosedPts.SetCheckSurface(1)
     enclosedPts.Update()
     if RETURNTYPE.lower() == "polydata":
-        vtkpts = vtk.vtkPoints()
-        for i in range(vtkObj.GetNumberOfPoints()):
-            if enclosedPts.IsInside(i):
-                vtkpts.InsertNextPoint(vtkObj.GetPoint(i))
-        # Create a new vtkPolyData to hold the inside points
-        vtkpts_pd = vtk.vtkPolyData()
-        vtkpts_pd.SetPoints(vtkpts)
-        return vtkpts_pd
-        # tt = filterThreshold(enclosedPts.GetOutput(), "SelectedPoints", 0.5, 2)
-        # return polyDataFromVtkObj(tt)
+        tt = getDataWithThreshold(enclosedPts.GetOutput(), "SelectedPoints", 0.5, 1.5)
+        return tt
+    elif RETURNTYPE.lower() == "unstruct":
+        tt = getDataWithThreshold(enclosedPts.GetOutput(), "SelectedPoints", 0.5, 1.5)
+        return tt
     elif RETURNTYPE.lower() == "tf":
         selectedA = getArrayAsNumpy(enclosedPts.GetOutput(), "SelectedPoints")
         return selectedA > 0.5
