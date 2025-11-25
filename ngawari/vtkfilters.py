@@ -290,6 +290,8 @@ def ensureScalarsSet(data: vtk.vtkDataObject, possibleName: Optional[str] = None
         return aS.GetName()
     except AttributeError: # in case no scalars set
         names = getArrayNames(data, pointData=pointData)
+        if len(names) == 0:
+            raise ValueError("No arrays available to set as scalars")
         if possibleName is not None:
             if possibleName in names:
                 setArrayAsScalars(data, possibleName, pointData=pointData)
@@ -1514,7 +1516,7 @@ def mergeTwoImageData(ii1, ii2, newRes, arrayName):
     iiC = buildRawImageDataFromOutline(oC, newRes)
     A1 = getArrayAsNumpy(filterResampleToDataset(ii1, iiC), arrayName)
     A2 = getArrayAsNumpy(filterResampleToDataset(ii2, iiC), arrayName)
-    AA = A1 + A2 / 2.0
+    AA = (A1 + A2) / 2.0
     setArrayFromNumpy(iiC, AA, arrayName, SET_SCALAR=True)
     return iiC
 
@@ -1953,7 +1955,7 @@ def extractVOI(data, ijkMinMax=None, sampleRate=(1, 1, 1)):
     """
     extractGrid = vtk.vtkExtractVOI()
     extractGrid.SetInputData(data)
-    ijkMinMaxOrig = data.GetExtent()
+    ijkMinMaxOrig = list(data.GetExtent())
     if ijkMinMax is None:
         ijkMinMax = ijkMinMaxOrig
     for k1 in [0, 2, 4]:
@@ -1996,6 +1998,8 @@ def extractVOI_fromFov(data, fovData):
                     idx = (k - extent[4]) * dims[0] * dims[1] + \
                          (j - extent[2]) * dims[0] + \
                          (i - extent[0])
+                    if idx < 0 or idx >= points.GetNumberOfPoints():
+                        continue  # Invalid index
                     point = points.GetPoint(idx)
                     if (point[0] >= bounds[0] and point[0] <= bounds[1] and
                         point[1] >= bounds[2] and point[1] <= bounds[3] and
@@ -2013,11 +2017,12 @@ def extractVOI_fromFov(data, fovData):
             for k3 in [4, 5]:
                 pt = [bounds[k1], bounds[k2], bounds[k3]]
                 bb.append(pt)
-    ti, tj, tk = [9999e90, 0], [9999e90, 0], [9999e90, 0]
+    ti, tj, tk = [float('inf'), 0], [float('inf'), 0], [float('inf'), 0]
     for X in bb:
         ijk = [0, 0, 0]
         pp = [0, 0, 0]
-        data.ComputeStructuredCoordinates(X, ijk, pp)
+        if data.ComputeStructuredCoordinates(X, ijk, pp) == 0:
+            continue  # Point outside structured grid
         for k0, tt in zip(ijk, [ti, tj, tk]):
             tt[0] = min(tt[0], k0)
             tt[1] = max(tt[1], k0)
@@ -2038,15 +2043,17 @@ def filterNullOutsideSurface(vtkObj, surfObj, arrayListToNull=None, tfArray=None
     :return: vtkPolyData
     """
     if tfArray is None:
-        tfArray = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
+        tfArray = filterGetEnclosedPts(vtkObj, surfObj, 'tf').astype(np.float32)
     if arrayListToNull is None:
         arrayListToNull = getArrayNames(vtkObj)
     for iA in arrayListToNull:
         aO = getArrayAsNumpy(vtkObj, iA)
-        aO = np.multiply(aO.T, tfArray)
-        # aO *= tfA[:,np.newaxis]
-        # print aO.shape
-        addNpArray(vtkObj, aO.T, iA)
+        # Handle both 1D and 2D arrays
+        if aO.ndim > 1:
+            aO = np.multiply(aO.T, tfArray).T
+        else:
+            aO = np.multiply(aO, tfArray)
+        addNpArray(vtkObj, aO, iA)
     return vtkObj
 
 
@@ -2062,16 +2069,17 @@ def filterNullInsideSurface(vtkObj, surfObj, arrayListToNull=None, nullVal=0.0):
     :param nullVal: float - value to null
     :return: vtkPolyData
     """
-    tfA = np.array(filterGetPointsInsideSurface(vtkObj, surfObj))
+    tfA = filterGetEnclosedPts(vtkObj, surfObj, 'tf').astype(np.float32)
     if arrayListToNull is None:
         arrayListToNull = getArrayNames(vtkObj)
     for iA in arrayListToNull:
         a0 = getArrayAsNumpy(vtkObj, iA)
         a0[tfA==1] = nullVal
-        # aO = np.multiply(aO.T, tfA)
-        # aO *= tfA[:,np.newaxis]
-        # print aO.shape
-        addNpArray(vtkObj, a0.T, iA)
+        # Handle both 1D and 2D arrays
+        if a0.ndim > 1:
+            addNpArray(vtkObj, a0.T, iA)
+        else:
+            addNpArray(vtkObj, a0, iA)
     return vtkObj
 
 
@@ -2392,10 +2400,11 @@ def countPointsInVti(vtiObj, objWithPoints, npArray=None, countArrayName="count"
     for i in range(objWithPoints.GetNumberOfPoints()):
         x = objWithPoints.GetPoints().GetPoint(i)
         cellId = cellLocator.FindCell(x)
-        if npArray is None:
-            A[cellId]+=1 * weightingArray[i]
-        else:
-            A[cellId]+=npArray[i] * weightingArray[i]
+        if cellId >= 0:  # FindCell returns -1 if point not found
+            if npArray is None:
+                A[cellId]+=1 * weightingArray[i]
+            else:
+                A[cellId]+=npArray[i] * weightingArray[i]
     setArrayFromNumpy(vtiObj, A, countArrayName, pointData=False)
     vtiObj = cellToPointData(vtiObj)
     setArrayAsScalars(vtiObj, countArrayName)
