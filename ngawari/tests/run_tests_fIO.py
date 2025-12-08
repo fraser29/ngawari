@@ -137,7 +137,34 @@ class TestTarGZLocal_AndMove(unittest.TestCase):
         if not DEBUG:
             os.unlink(os.path.join(TEST_DIRECTORY, 'test-pvd.tar.gz'))
 
-
+class TestWriteNifti(unittest.TestCase):
+    def runTest(self):
+        N = 15
+        imageFile_nii = os.path.join(TEST_DIRECTORY, 'test-nii.nii')
+        imageFile_nii_gz = os.path.join(TEST_DIRECTORY, 'test-nii.nii.gz')
+        image = buildSinusoidalVTI(0.5, 4.0, N)
+        res1 = fIO.writeVTKFile(image, imageFile_nii)
+        self.assertEqual(res1, imageFile_nii)
+        image2 = fIO.readNifti(imageFile_nii)
+        if not DEBUG:
+            os.unlink(imageFile_nii)
+        self.assertEqual(image2.GetNumberOfPoints(), N*N*N, "Incorrect number of points")
+        self.assertEqual(image2.GetNumberOfCells(), (N-1)*(N-1)*(N-1), "Incorrect number of cells")
+        A = vtkfilters.getScalarsAsNumpy(image2)
+        self.assertAlmostEqual(A[36], 0.205667, places=4)
+        A3D = vtkfilters.getScalarsAsNumpy(image2, RETURN_3D=True)
+        self.assertAlmostEqual(A3D[6,4,5], 0.136813, places=4)
+        res2 = fIO.writeVTKFile(image, imageFile_nii_gz)
+        self.assertEqual(res2, imageFile_nii_gz)
+        image3 = fIO.readNifti(imageFile_nii_gz)
+        self.assertEqual(image3.GetNumberOfPoints(), N*N*N, "Incorrect number of points")
+        self.assertEqual(image3.GetNumberOfCells(), (N-1)*(N-1)*(N-1), "Incorrect number of cells")
+        A = vtkfilters.getScalarsAsNumpy(image3)
+        self.assertAlmostEqual(A[36], 0.205667, places=4)
+        A3D = vtkfilters.getScalarsAsNumpy(image3, RETURN_3D=True)
+        self.assertAlmostEqual(A3D[6,4,5], 0.136813, places=4)
+        if not DEBUG:
+            os.unlink(imageFile_nii_gz)
 
 
 

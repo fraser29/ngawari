@@ -12,6 +12,7 @@ import sys
 import numpy as np
 import unicodedata as ud
 import pickle
+import gzip
 import string
 import json
 from datetime import date, datetime, timedelta
@@ -659,7 +660,9 @@ def writeVTKFile(data: vtk.vtkDataObject, fileName: str, STL_ASCII: bool = False
     elif fileName.endswith('mha'):
         writer = vtk.vtkMetaImageWriter()
     elif fileName.endswith('nii'):
-        return writeNifti(data, fileName)
+        return writeNifti(data, fileName, GZIP_COMPRESS=False)
+    elif fileName.endswith('nii.gz'):
+        return writeNifti(data, fileName[:-3], GZIP_COMPRESS=True)
     ##
     if not writer:
         raise IOError('Extension not recognised (%s)'%(fileName))
@@ -720,7 +723,25 @@ def readVTKFile(fileName: str) -> vtk.vtkDataObject:
 
 
 # =========================================================================
-def writeNifti(data: vtk.vtkDataObject, fileName: str) -> str:
+def nii_to_niigz(nii_file: str) -> str:
+    """
+    Compress a NIfTI file to a NIfTI.gz file.
+
+    Args:
+        nii_file (str): The path of the NIfTI file to compress.
+
+    Returns:
+        str: The path of the compressed NIfTI file.
+    """
+    fOut_nii_gz = nii_file[:-4] + ".nii.gz"
+    with open(nii_file, 'rb') as f_in:
+        with gzip.open(fOut_nii_gz, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    os.remove(nii_file)  # Remove uncompressed file
+    return fOut_nii_gz
+
+
+def writeNifti(data: vtk.vtkDataObject, fileName: str, GZIP_COMPRESS: bool =False) -> str:
     """
     Write a NIfTI file.
 
@@ -735,6 +756,8 @@ def writeNifti(data: vtk.vtkDataObject, fileName: str) -> str:
     writer.SetFileName(fileName)
     writer.SetInputData(data)
     writer.Write()
+    if GZIP_COMPRESS:
+        fileName = nii_to_niigz(fileName)
     return fileName
 
 def readNifti(fileName: str) -> vtk.vtkDataObject:
