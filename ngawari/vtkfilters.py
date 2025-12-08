@@ -1953,12 +1953,12 @@ def extractVOI(data, ijkMinMax=None, sampleRate=(1, 1, 1)):
     :param sampleRate: tuple of ints - sample rate
     :return: vtkDataObject
     """
-    ijkMinMax = list(ijkMinMax)
     extractGrid = vtk.vtkExtractVOI()
     extractGrid.SetInputData(data)
     ijkMinMaxOrig = list(data.GetExtent())
     if ijkMinMax is None:
         ijkMinMax = ijkMinMaxOrig
+    ijkMinMax = list(ijkMinMax)
     for k1 in [0, 2, 4]:
         ijkMinMax[k1] = max(ijkMinMax[k1], 0)
     for k2 in [1, 3, 5]:
