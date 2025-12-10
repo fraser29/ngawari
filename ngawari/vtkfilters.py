@@ -271,6 +271,21 @@ def setArrayAsScalars(data: vtk.vtkDataObject, arrayName: str, pointData: bool =
         data.GetCellData().SetScalars(getArray(data, arrayName, pointData=pointData))
 
 
+def setArrayAsVectors(data: vtk.vtkDataObject, arrayName: str, pointData: bool = True) -> None:
+    """
+    Set an array as vectors. Note: array must already be in data and if a vectors array already exists then it will be overwritten.
+
+    Args:
+        data (vtk.vtkDataObject): The VTK data object.
+        arrayName (str): The name of the array (already in data).
+        pointData (bool): Whether to set point data vectors [default: True].
+    """
+    if pointData:
+        data.GetPointData().SetVectors(getArray(data, arrayName, pointData=pointData))
+    else:
+        data.GetCellData().SetVectors(getArray(data, arrayName, pointData=pointData))
+
+
 def ensureScalarsSet(data: vtk.vtkDataObject, possibleName: Optional[str] = None, pointData: bool = True) -> str:
     """
     Ensure that scalars are set for a VTK data object. 
@@ -1416,7 +1431,16 @@ def iterativeClosestPointsTransform(sourcePoly, target_poly, maxMeanDist, RIGID=
     icp.Modified()
     icp.Update()
     return icp
-    
+
+
+def filterWarpPolydataByVectors(data, vecArrayName, scaleFactor=1.0):
+    warpF = vtk.vtkWarpVector()
+    setArrayAsVectors(data, vecArrayName)
+    warpF.SetInputData(data)
+    warpF.SetScaleFactor(scaleFactor)
+    warpF.Update()
+    return warpF.GetOutput()
+
 
 def transformImageData(data, matrix, scaleF=[1.0,1.0,1.0]):
     # Returns vts

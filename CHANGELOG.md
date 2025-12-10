@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [0.1.16] - 2025-12-08
+## [0.1.17] - 2025-12-10
+### Added
+- Function to set an array as vectors (`setArrayAsVectors`)
+- Function to warp polydata by VECTORS (`filterWarpPolydataByVectors`)
 
+
+## [0.1.16] - 2025-12-08
 ### Added
 - NIfTI file compression functionality (`nii_to_niigz`)
 - NIfTI file writing functionality (`writeNifti`) (also via `writeVTKFile` for nii and nii.gz)
@@ -16,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated documentation
 ## [0.1.15] - 2025-11-25
-
 ### Fixed
 - Bug fixes in `filterNullOutsideSurface` and `filterNullInsideSurface`
 - Bug fixes in `filterGetEnclosedPts`
