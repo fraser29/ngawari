@@ -2046,8 +2046,7 @@ def extractVOI_fromFov(data, fovData):
     for X in bb:
         ijk = [0, 0, 0]
         pp = [0, 0, 0]
-        if data.ComputeStructuredCoordinates(X, ijk, pp) == 0:
-            continue  # Point outside structured grid
+        res = data.ComputeStructuredCoordinates(X, ijk, pp)
         for k0, tt in zip(ijk, [ti, tj, tk]):
             tt[0] = min(tt[0], k0)
             tt[1] = max(tt[1], k0)
