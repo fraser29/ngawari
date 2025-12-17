@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Function to set an array as vectors (`setArrayAsVectors`)
 - Function to warp polydata by VECTORS (`filterWarpPolydataByVectors`)
+### Fixed
+- Bug in filterExtractVOI - error if VOI greater than bounds. 
 
 
 ## [0.1.16] - 2025-12-08
