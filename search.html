@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search &mdash; Ngawari 0.1.7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=ca7ad2ea"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="#" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Ngawari
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#from-pypi-recommended">From PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#from-source">From Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#development-installation">Development Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-installation">Verifying Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#version-compatibility">Version Compatibility</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#creating-basic-geometry">Creating Basic Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#working-with-arrays">Working with Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#filtering-operations">Filtering Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#clipping-and-cutting">Clipping and Cutting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#file-i-o">File I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#mathematical-operations">Mathematical Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#core-modules">Core Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/ftk.html">ftk - Mathematical and Utility Functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIDOfClosestFloat"><code class="docutils literal notranslate"><span class="pre">getIDOfClosestFloat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getClosestFloat"><code class="docutils literal notranslate"><span class="pre">getClosestFloat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIDOfClosestPoint"><code class="docutils literal notranslate"><span class="pre">getIDOfClosestPoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getClosestPoint"><code class="docutils literal notranslate"><span class="pre">getClosestPoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.distPointPoints"><code class="docutils literal notranslate"><span class="pre">distPointPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.squareDistPointPoints"><code class="docutils literal notranslate"><span class="pre">squareDistPointPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.sortedIDsOfClosestPoints"><code class="docutils literal notranslate"><span class="pre">sortedIDsOfClosestPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.distTwoPoints"><code class="docutils literal notranslate"><span class="pre">distTwoPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIDsOfClosestPoints"><code class="docutils literal notranslate"><span class="pre">getIDsOfClosestPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIDsOfFartherestPoints"><code class="docutils literal notranslate"><span class="pre">getIDsOfFartherestPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.vectorMagnitudes"><code class="docutils literal notranslate"><span class="pre">vectorMagnitudes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.normaliseArray"><code class="docutils literal notranslate"><span class="pre">normaliseArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.angleBetween2Vec"><code class="docutils literal notranslate"><span class="pre">angleBetween2Vec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.angleBetweenVecAndPlane"><code class="docutils literal notranslate"><span class="pre">angleBetweenVecAndPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.areVecsMatching"><code class="docutils literal notranslate"><span class="pre">areVecsMatching()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.linearFit"><code class="docutils literal notranslate"><span class="pre">linearFit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitPlaneToPoints"><code class="docutils literal notranslate"><span class="pre">fitPlaneToPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.polyfit2d"><code class="docutils literal notranslate"><span class="pre">polyfit2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.polyval2d"><code class="docutils literal notranslate"><span class="pre">polyval2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.projectPtsToPlane"><code class="docutils literal notranslate"><span class="pre">projectPtsToPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.project3DPointsToPlanarCoordinateSystem"><code class="docutils literal notranslate"><span class="pre">project3DPointsToPlanarCoordinateSystem()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.project3DPointsToPlanarCoordinateSystem_OLD"><code class="docutils literal notranslate"><span class="pre">project3DPointsToPlanarCoordinateSystem_OLD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.project3DPointsToPlanarCoordinateSystem2"><code class="docutils literal notranslate"><span class="pre">project3DPointsToPlanarCoordinateSystem2()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.convert2DPointsTo3DCoordinateSystem"><code class="docutils literal notranslate"><span class="pre">convert2DPointsTo3DCoordinateSystem()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitCircle2D"><code class="docutils literal notranslate"><span class="pre">fitCircle2D()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitCircleRANSAC"><code class="docutils literal notranslate"><span class="pre">fitCircleRANSAC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitCircleRANSAC3D_xyz"><code class="docutils literal notranslate"><span class="pre">fitCircleRANSAC3D_xyz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fit_ellipse_2d"><code class="docutils literal notranslate"><span class="pre">fit_ellipse_2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fit_ellipse_3d"><code class="docutils literal notranslate"><span class="pre">fit_ellipse_3d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.buildCircle3D"><code class="docutils literal notranslate"><span class="pre">buildCircle3D()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitPlaneToPointCloud_RANSAC"><code class="docutils literal notranslate"><span class="pre">fitPlaneToPointCloud_RANSAC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.deg2rad"><code class="docutils literal notranslate"><span class="pre">deg2rad()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.rad2deg"><code class="docutils literal notranslate"><span class="pre">rad2deg()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.rotateArray"><code class="docutils literal notranslate"><span class="pre">rotateArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.rotationMatrixFromThreeAngles"><code class="docutils literal notranslate"><span class="pre">rotationMatrixFromThreeAngles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getClosestInSortedList"><code class="docutils literal notranslate"><span class="pre">getClosestInSortedList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIdOfClosestFloat"><code class="docutils literal notranslate"><span class="pre">getIdOfClosestFloat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.polar2Cart"><code class="docutils literal notranslate"><span class="pre">polar2Cart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.polar2z"><code class="docutils literal notranslate"><span class="pre">polar2z()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.z2Polar"><code class="docutils literal notranslate"><span class="pre">z2Polar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.cart2Polar"><code class="docutils literal notranslate"><span class="pre">cart2Polar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.unit_vector"><code class="docutils literal notranslate"><span class="pre">unit_vector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.vecFromPtToLine"><code class="docutils literal notranslate"><span class="pre">vecFromPtToLine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fcdot"><code class="docutils literal notranslate"><span class="pre">fcdot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.cosineDifferenceBetweenTwoMats"><code class="docutils literal notranslate"><span class="pre">cosineDifferenceBetweenTwoMats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getVectorComponentAlongRefVec"><code class="docutils literal notranslate"><span class="pre">getVectorComponentAlongRefVec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getVectorComponentAlongRefVec_Mag"><code class="docutils literal notranslate"><span class="pre">getVectorComponentAlongRefVec_Mag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getVectorComponentNormalToRefVec"><code class="docutils literal notranslate"><span class="pre">getVectorComponentNormalToRefVec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.closeCurve"><code class="docutils literal notranslate"><span class="pre">closeCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.splinePoints"><code class="docutils literal notranslate"><span class="pre">splinePoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.splineFunction"><code class="docutils literal notranslate"><span class="pre">splineFunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.splineXY"><code class="docutils literal notranslate"><span class="pre">splineXY()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.splineCurve"><code class="docutils literal notranslate"><span class="pre">splineCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getMaxsMinsInflections"><code class="docutils literal notranslate"><span class="pre">getMaxsMinsInflections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.sigmoidFunction"><code class="docutils literal notranslate"><span class="pre">sigmoidFunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.extractContinuousSegFromPeriodic"><code class="docutils literal notranslate"><span class="pre">extractContinuousSegFromPeriodic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitGaussianToData"><code class="docutils literal notranslate"><span class="pre">fitGaussianToData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.gaussianFunction"><code class="docutils literal notranslate"><span class="pre">gaussianFunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculate_signed_area_2d"><code class="docutils literal notranslate"><span class="pre">calculate_signed_area_2d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.isClosedPolygonClockwise"><code class="docutils literal notranslate"><span class="pre">isClosedPolygonClockwise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.ensureClosedPolyIsClockwise"><code class="docutils literal notranslate"><span class="pre">ensureClosedPolyIsClockwise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.setFirstPtOfPolygon"><code class="docutils literal notranslate"><span class="pre">setFirstPtOfPolygon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.reorderPointsStartClosestToX"><code class="docutils literal notranslate"><span class="pre">reorderPointsStartClosestToX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.reorderPointsStatingAti"><code class="docutils literal notranslate"><span class="pre">reorderPointsStatingAti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.sortPointsByClosest_RETURNIDs"><code class="docutils literal notranslate"><span class="pre">sortPointsByClosest_RETURNIDs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.sortPointsByClosest"><code class="docutils literal notranslate"><span class="pre">sortPointsByClosest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.cumulativeDistanceAlongLine"><code class="docutils literal notranslate"><span class="pre">cumulativeDistanceAlongLine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getIdOfPointClosestToX"><code class="docutils literal notranslate"><span class="pre">getIdOfPointClosestToX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getPolygonMeanRadius"><code class="docutils literal notranslate"><span class="pre">getPolygonMeanRadius()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getPolygonMeanDiameter"><code class="docutils literal notranslate"><span class="pre">getPolygonMeanDiameter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getPolygonCenterPoint"><code class="docutils literal notranslate"><span class="pre">getPolygonCenterPoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.lineMagnitude"><code class="docutils literal notranslate"><span class="pre">lineMagnitude()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.distancePointToLineSegPerpendicular"><code class="docutils literal notranslate"><span class="pre">distancePointToLineSegPerpendicular()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.ndarrayToListOfTuple3"><code class="docutils literal notranslate"><span class="pre">ndarrayToListOfTuple3()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.circleFit2DErr"><code class="docutils literal notranslate"><span class="pre">circleFit2DErr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.distanceToPlane"><code class="docutils literal notranslate"><span class="pre">distanceToPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.residualPlane"><code class="docutils literal notranslate"><span class="pre">residualPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.residualsCircle"><code class="docutils literal notranslate"><span class="pre">residualsCircle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.icp"><code class="docutils literal notranslate"><span class="pre">icp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitPlane3DOptimize"><code class="docutils literal notranslate"><span class="pre">fitPlane3DOptimize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.fitCircle3D"><code class="docutils literal notranslate"><span class="pre">fitCircle3D()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.lagBetweenTwoCurves"><code class="docutils literal notranslate"><span class="pre">lagBetweenTwoCurves()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculatePlaneThreePoints"><code class="docutils literal notranslate"><span class="pre">calculatePlaneThreePoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.getPlaneConstantsFromPointAndVector"><code class="docutils literal notranslate"><span class="pre">getPlaneConstantsFromPointAndVector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculateDerivativeOnLine_backwardDiff"><code class="docutils literal notranslate"><span class="pre">calculateDerivativeOnLine_backwardDiff()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculateSecondDerivativeOnLine"><code class="docutils literal notranslate"><span class="pre">calculateSecondDerivativeOnLine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculateCurvature3Pts"><code class="docutils literal notranslate"><span class="pre">calculateCurvature3Pts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculateCurvature_D"><code class="docutils literal notranslate"><span class="pre">calculateCurvature_D()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.setVectorDirection"><code class="docutils literal notranslate"><span class="pre">setVectorDirection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.buildRotationMatrix"><code class="docutils literal notranslate"><span class="pre">buildRotationMatrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.adjustPointsCenterOfMassToOrigin"><code class="docutils literal notranslate"><span class="pre">adjustPointsCenterOfMassToOrigin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.areVecsConsistent"><code class="docutils literal notranslate"><span class="pre">areVecsConsistent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.setVecAConsitentWithVecB"><code class="docutils literal notranslate"><span class="pre">setVecAConsitentWithVecB()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.buildConvexHUll3D"><code class="docutils literal notranslate"><span class="pre">buildConvexHUll3D()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.orderPointsConvexHull_IDs"><code class="docutils literal notranslate"><span class="pre">orderPointsConvexHull_IDs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.orderPointsConvexHull"><code class="docutils literal notranslate"><span class="pre">orderPointsConvexHull()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.groupContinuousLinesByTol"><code class="docutils literal notranslate"><span class="pre">groupContinuousLinesByTol()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.buildContinuousLineByClosestPt"><code class="docutils literal notranslate"><span class="pre">buildContinuousLineByClosestPt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.accumulatedAverage"><code class="docutils literal notranslate"><span class="pre">accumulatedAverage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.interpolateNANsFromSurroundingValues_cubic"><code class="docutils literal notranslate"><span class="pre">interpolateNANsFromSurroundingValues_cubic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.doesLineSegPierceTriangle"><code class="docutils literal notranslate"><span class="pre">doesLineSegPierceTriangle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.doesLinePierceTriangle"><code class="docutils literal notranslate"><span class="pre">doesLinePierceTriangle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.pluckerSideOperator"><code class="docutils literal notranslate"><span class="pre">pluckerSideOperator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.pluckerLine"><code class="docutils literal notranslate"><span class="pre">pluckerLine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.doesVectorPierceAnyTriangle"><code class="docutils literal notranslate"><span class="pre">doesVectorPierceAnyTriangle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.calculateBSA"><code class="docutils literal notranslate"><span class="pre">calculateBSA()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.interpolateNANsFromSurroundingValues_linear"><code class="docutils literal notranslate"><span class="pre">interpolateNANsFromSurroundingValues_linear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#ngawari.ftk.convexHull"><code class="docutils literal notranslate"><span class="pre">convexHull()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#vector-operations">Vector Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#matrix-operations">Matrix Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#geometric-calculations">Geometric Calculations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#point-and-line-utilities">Point and Line Utilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/ftk.html#mathematical-transformations">Mathematical Transformations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/fIO.html">fIO - File Input/Output</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.remove_symbols"><code class="docutils literal notranslate"><span class="pre">remove_symbols()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.remove_not_allowed"><code class="docutils literal notranslate"><span class="pre">remove_not_allowed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.countFilesInDir"><code class="docutils literal notranslate"><span class="pre">countFilesInDir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.getAllFilesUnderDir"><code class="docutils literal notranslate"><span class="pre">getAllFilesUnderDir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.parseFileToTagsDictionary"><code class="docutils literal notranslate"><span class="pre">parseFileToTagsDictionary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeDictionaryToFile"><code class="docutils literal notranslate"><span class="pre">writeDictionaryToFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.NumpyEncoder"><code class="docutils literal notranslate"><span class="pre">NumpyEncoder</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeDictionaryToJSON"><code class="docutils literal notranslate"><span class="pre">writeDictionaryToJSON()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.parseJsonToDictionary"><code class="docutils literal notranslate"><span class="pre">parseJsonToDictionary()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.strListToFloatList"><code class="docutils literal notranslate"><span class="pre">strListToFloatList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.xmlIndent"><code class="docutils literal notranslate"><span class="pre">xmlIndent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.findAndReplaceTextInFile"><code class="docutils literal notranslate"><span class="pre">findAndReplaceTextInFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readFileToListOfLines"><code class="docutils literal notranslate"><span class="pre">readFileToListOfLines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.appendFiles"><code class="docutils literal notranslate"><span class="pre">appendFiles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pickleData"><code class="docutils literal notranslate"><span class="pre">pickleData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.unpickleData"><code class="docutils literal notranslate"><span class="pre">unpickleData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.tarGZLocal_AndMove"><code class="docutils literal notranslate"><span class="pre">tarGZLocal_AndMove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.addSuffixToName"><code class="docutils literal notranslate"><span class="pre">addSuffixToName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.checkIfExtnPresent"><code class="docutils literal notranslate"><span class="pre">checkIfExtnPresent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readDataCSV"><code class="docutils literal notranslate"><span class="pre">readDataCSV()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeCSVFile"><code class="docutils literal notranslate"><span class="pre">writeCSVFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.detectDelimiter"><code class="docutils literal notranslate"><span class="pre">detectDelimiter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writePlyFile"><code class="docutils literal notranslate"><span class="pre">writePlyFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeVTKFile"><code class="docutils literal notranslate"><span class="pre">writeVTKFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readVTKFile"><code class="docutils literal notranslate"><span class="pre">readVTKFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.nii_to_niigz"><code class="docutils literal notranslate"><span class="pre">nii_to_niigz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeNifti"><code class="docutils literal notranslate"><span class="pre">writeNifti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readNifti"><code class="docutils literal notranslate"><span class="pre">readNifti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readNRRD"><code class="docutils literal notranslate"><span class="pre">readNRRD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeVTK_PVD_Dict"><code class="docutils literal notranslate"><span class="pre">writeVTK_PVD_Dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdAddTimeToFieldData"><code class="docutils literal notranslate"><span class="pre">pvdAddTimeToFieldData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.writeZipFromVTK_PVD_Dict"><code class="docutils literal notranslate"><span class="pre">writeZipFromVTK_PVD_Dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.deleteFilesByPVD"><code class="docutils literal notranslate"><span class="pre">deleteFilesByPVD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readPVDFileName"><code class="docutils literal notranslate"><span class="pre">readPVDFileName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readImageFileToDict"><code class="docutils literal notranslate"><span class="pre">readImageFileToDict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.readPVD"><code class="docutils literal notranslate"><span class="pre">readPVD()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetDict"><code class="docutils literal notranslate"><span class="pre">pvdGetDict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetClosestTimeToT"><code class="docutils literal notranslate"><span class="pre">pvdGetClosestTimeToT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetTimes"><code class="docutils literal notranslate"><span class="pre">pvdGetTimes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetIdOfT"><code class="docutils literal notranslate"><span class="pre">pvdGetIdOfT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetFileAtT"><code class="docutils literal notranslate"><span class="pre">pvdGetFileAtT()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetNumberTimePoints"><code class="docutils literal notranslate"><span class="pre">pvdGetNumberTimePoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetDataFileRoot_Prefix_and_Ext"><code class="docutils literal notranslate"><span class="pre">pvdGetDataFileRoot_Prefix_and_Ext()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdGetDataClosestTo"><code class="docutils literal notranslate"><span class="pre">pvdGetDataClosestTo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdMultiply"><code class="docutils literal notranslate"><span class="pre">pvdMultiply()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdReverse"><code class="docutils literal notranslate"><span class="pre">pvdReverse()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdRestart_t"><code class="docutils literal notranslate"><span class="pre">pvdRestart_t()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdRestart"><code class="docutils literal notranslate"><span class="pre">pvdRestart()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdClip"><code class="docutils literal notranslate"><span class="pre">pvdClip()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdResetTimes"><code class="docutils literal notranslate"><span class="pre">pvdResetTimes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdResetStartPoint_Id"><code class="docutils literal notranslate"><span class="pre">pvdResetStartPoint_Id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdResetStartPoint"><code class="docutils literal notranslate"><span class="pre">pvdResetStartPoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.pvdAddStartPointAtEndForPeriodicy"><code class="docutils literal notranslate"><span class="pre">pvdAddStartPointAtEndForPeriodicy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#ngawari.fIO.buildPVD_WaterFallRestarts"><code class="docutils literal notranslate"><span class="pre">buildPVD_WaterFallRestarts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#vtk-file-formats">VTK File Formats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#other-file-formats">Other File Formats</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#pvd-file-operations">PVD File Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#data-conversion">Data Conversion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/fIO.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/vtkfilters.html">vtkfilters - VTK Filtering and Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.isVTI"><code class="docutils literal notranslate"><span class="pre">isVTI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.isVTP"><code class="docutils literal notranslate"><span class="pre">isVTP()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.isVTS"><code class="docutils literal notranslate"><span class="pre">isVTS()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.angleBetweenTwoVectors"><code class="docutils literal notranslate"><span class="pre">angleBetweenTwoVectors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getArrayNames"><code class="docutils literal notranslate"><span class="pre">getArrayNames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getArray"><code class="docutils literal notranslate"><span class="pre">getArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getScalarsArrayName"><code class="docutils literal notranslate"><span class="pre">getScalarsArrayName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVectorsArrayName"><code class="docutils literal notranslate"><span class="pre">getVectorsArrayName()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getArrayId"><code class="docutils literal notranslate"><span class="pre">getArrayId()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.renameArray"><code class="docutils literal notranslate"><span class="pre">renameArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getArrayAsNumpy"><code class="docutils literal notranslate"><span class="pre">getArrayAsNumpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getScalarsAsNumpy"><code class="docutils literal notranslate"><span class="pre">getScalarsAsNumpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.setArrayFromNumpy"><code class="docutils literal notranslate"><span class="pre">setArrayFromNumpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.addNpArray"><code class="docutils literal notranslate"><span class="pre">addNpArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.setArrayDtype"><code class="docutils literal notranslate"><span class="pre">setArrayDtype()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.setArrayAsScalars"><code class="docutils literal notranslate"><span class="pre">setArrayAsScalars()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.setArrayAsVectors"><code class="docutils literal notranslate"><span class="pre">setArrayAsVectors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.ensureScalarsSet"><code class="docutils literal notranslate"><span class="pre">ensureScalarsSet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.delArray"><code class="docutils literal notranslate"><span class="pre">delArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.delArraysExcept"><code class="docutils literal notranslate"><span class="pre">delArraysExcept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.addFieldData"><code class="docutils literal notranslate"><span class="pre">addFieldData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getFieldData"><code class="docutils literal notranslate"><span class="pre">getFieldData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getFieldDataDict"><code class="docutils literal notranslate"><span class="pre">getFieldDataDict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getFieldDataNames"><code class="docutils literal notranslate"><span class="pre">getFieldDataNames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.duplicateFieldData"><code class="docutils literal notranslate"><span class="pre">duplicateFieldData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.deleteFieldData"><code class="docutils literal notranslate"><span class="pre">deleteFieldData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVtkPointsAsNumpy"><code class="docutils literal notranslate"><span class="pre">getVtkPointsAsNumpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPtsAsNumpy"><code class="docutils literal notranslate"><span class="pre">getPtsAsNumpy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getCellCenters"><code class="docutils literal notranslate"><span class="pre">getCellCenters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildImplicitSphere"><code class="docutils literal notranslate"><span class="pre">buildImplicitSphere()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildSphereSource"><code class="docutils literal notranslate"><span class="pre">buildSphereSource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildCylinderSource"><code class="docutils literal notranslate"><span class="pre">buildCylinderSource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildImplicitBox"><code class="docutils literal notranslate"><span class="pre">buildImplicitBox()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildCubeSource"><code class="docutils literal notranslate"><span class="pre">buildCubeSource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPolyLineBetweenTwoPoints"><code class="docutils literal notranslate"><span class="pre">buildPolyLineBetweenTwoPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPolyTrianglesAtCp"><code class="docutils literal notranslate"><span class="pre">buildPolyTrianglesAtCp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPlaneCentredOnRoi"><code class="docutils literal notranslate"><span class="pre">buildPlaneCentredOnRoi()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPlaneCentredOnSphere"><code class="docutils literal notranslate"><span class="pre">buildPlaneCentredOnSphere()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPlanePtAndNorm"><code class="docutils literal notranslate"><span class="pre">buildPlanePtAndNorm()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPlaneCentredOnO"><code class="docutils literal notranslate"><span class="pre">buildPlaneCentredOnO()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPlaneSource"><code class="docutils literal notranslate"><span class="pre">buildPlaneSource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPolyLineFromXYZ_spline"><code class="docutils literal notranslate"><span class="pre">buildPolyLineFromXYZ_spline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPolyLineFromXYZ"><code class="docutils literal notranslate"><span class="pre">buildPolyLineFromXYZ()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildPolydataFromXYZ"><code class="docutils literal notranslate"><span class="pre">buildPolydataFromXYZ()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedByCircle"><code class="docutils literal notranslate"><span class="pre">clippedByCircle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.sliceByPlane"><code class="docutils literal notranslate"><span class="pre">sliceByPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getDataCutByPlane"><code class="docutils literal notranslate"><span class="pre">getDataCutByPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolyDataClippedByROI"><code class="docutils literal notranslate"><span class="pre">getPolyDataClippedByROI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolyDataClippedByBox"><code class="docutils literal notranslate"><span class="pre">getPolyDataClippedByBox()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolyDataClippedBySphere"><code class="docutils literal notranslate"><span class="pre">getPolyDataClippedBySphere()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedByPolyData"><code class="docutils literal notranslate"><span class="pre">clippedByPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.doesLinePierceTri"><code class="docutils literal notranslate"><span class="pre">doesLinePierceTri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.doesLinePiercePolygon"><code class="docutils literal notranslate"><span class="pre">doesLinePiercePolygon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedByPlane"><code class="docutils literal notranslate"><span class="pre">clippedByPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clipDataByPlane"><code class="docutils literal notranslate"><span class="pre">clipDataByPlane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedByPlaneClosedSurface"><code class="docutils literal notranslate"><span class="pre">clippedByPlaneClosedSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedBySphere"><code class="docutils literal notranslate"><span class="pre">clippedBySphere()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clippedByScalar"><code class="docutils literal notranslate"><span class="pre">clippedByScalar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clipVolumeToEightPolydataBoxes"><code class="docutils literal notranslate"><span class="pre">clipVolumeToEightPolydataBoxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.roi_line_to_roi_plane"><code class="docutils literal notranslate"><span class="pre">roi_line_to_roi_plane()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.clipPlaneToROI"><code class="docutils literal notranslate"><span class="pre">clipPlaneToROI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.vtiToVts"><code class="docutils literal notranslate"><span class="pre">vtiToVts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.vtsToVti"><code class="docutils literal notranslate"><span class="pre">vtsToVti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVtsOrigin"><code class="docutils literal notranslate"><span class="pre">getVtsOrigin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVtsResolution"><code class="docutils literal notranslate"><span class="pre">getVtsResolution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getResolution_VTI"><code class="docutils literal notranslate"><span class="pre">getResolution_VTI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getDimsResOriginFromOutline"><code class="docutils literal notranslate"><span class="pre">getDimsResOriginFromOutline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildRawImageDataFromPolyData"><code class="docutils literal notranslate"><span class="pre">buildRawImageDataFromPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildRawImageDataFromOutline"><code class="docutils literal notranslate"><span class="pre">buildRawImageDataFromOutline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildRawImageDataFromOutline_dims"><code class="docutils literal notranslate"><span class="pre">buildRawImageDataFromOutline_dims()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.duplicateImageData"><code class="docutils literal notranslate"><span class="pre">duplicateImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.buildRawImageData"><code class="docutils literal notranslate"><span class="pre">buildRawImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.surf2ImageBW"><code class="docutils literal notranslate"><span class="pre">surf2ImageBW()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVarValueAtI_ImageData"><code class="docutils literal notranslate"><span class="pre">getVarValueAtI_ImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getImageX"><code class="docutils literal notranslate"><span class="pre">getImageX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.imageX_ToStructuredCoords"><code class="docutils literal notranslate"><span class="pre">imageX_ToStructuredCoords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.imageIndex_ToStructuredCoords"><code class="docutils literal notranslate"><span class="pre">imageIndex_ToStructuredCoords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getNeighbours26_fromImageIndex"><code class="docutils literal notranslate"><span class="pre">getNeighbours26_fromImageIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.imageStrucCoords_toIndex"><code class="docutils literal notranslate"><span class="pre">imageStrucCoords_toIndex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.imageStrucCoords_toX"><code class="docutils literal notranslate"><span class="pre">imageStrucCoords_toX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterFlipImageData"><code class="docutils literal notranslate"><span class="pre">filterFlipImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolyDataMeanFromCenter"><code class="docutils literal notranslate"><span class="pre">getPolyDataMeanFromCenter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.copyPolyData"><code class="docutils literal notranslate"><span class="pre">copyPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.copyData"><code class="docutils literal notranslate"><span class="pre">copyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.contourFilter"><code class="docutils literal notranslate"><span class="pre">contourFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.cleanData"><code class="docutils literal notranslate"><span class="pre">cleanData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.reduceNumberOfPoints"><code class="docutils literal notranslate"><span class="pre">reduceNumberOfPoints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterBoolean"><code class="docutils literal notranslate"><span class="pre">filterBoolean()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.tubeFilter"><code class="docutils literal notranslate"><span class="pre">tubeFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterVtpSpline"><code class="docutils literal notranslate"><span class="pre">filterVtpSpline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterTransformPolyData"><code class="docutils literal notranslate"><span class="pre">filterTransformPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.translatePoly_AxisA_To_AxisB"><code class="docutils literal notranslate"><span class="pre">translatePoly_AxisA_To_AxisB()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.transformPolydataA_to_B_ICP"><code class="docutils literal notranslate"><span class="pre">transformPolydataA_to_B_ICP()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.iterativeClosestPointsTransform"><code class="docutils literal notranslate"><span class="pre">iterativeClosestPointsTransform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterWarpPolydataByVectors"><code class="docutils literal notranslate"><span class="pre">filterWarpPolydataByVectors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.transformImageData"><code class="docutils literal notranslate"><span class="pre">transformImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.pointToCellData"><code class="docutils literal notranslate"><span class="pre">pointToCellData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.cellToPointData"><code class="docutils literal notranslate"><span class="pre">cellToPointData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getOutline"><code class="docutils literal notranslate"><span class="pre">getOutline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getMaximumBounds"><code class="docutils literal notranslate"><span class="pre">getMaximumBounds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.appendPolyData"><code class="docutils literal notranslate"><span class="pre">appendPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.appendPolyDataList"><code class="docutils literal notranslate"><span class="pre">appendPolyDataList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.appendImageList"><code class="docutils literal notranslate"><span class="pre">appendImageList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.appendUnstructured"><code class="docutils literal notranslate"><span class="pre">appendUnstructured()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.mergeTwoImageData"><code class="docutils literal notranslate"><span class="pre">mergeTwoImageData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.multiblockToList"><code class="docutils literal notranslate"><span class="pre">multiblockToList()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.idListToVtkIDs"><code class="docutils literal notranslate"><span class="pre">idListToVtkIDs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.extractCells"><code class="docutils literal notranslate"><span class="pre">extractCells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.extractSelection"><code class="docutils literal notranslate"><span class="pre">extractSelection()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.delCellsByEdgeLength"><code class="docutils literal notranslate"><span class="pre">delCellsByEdgeLength()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.delCellsByID"><code class="docutils literal notranslate"><span class="pre">delCellsByID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolylineLength"><code class="docutils literal notranslate"><span class="pre">getPolylineLength()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getLoopSubDivided"><code class="docutils literal notranslate"><span class="pre">getLoopSubDivided()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.decimateTris"><code class="docutils literal notranslate"><span class="pre">decimateTris()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.shrinkWrapData"><code class="docutils literal notranslate"><span class="pre">shrinkWrapData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.poissonRecon"><code class="docutils literal notranslate"><span class="pre">poissonRecon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.pointCloudRemoveOutliers"><code class="docutils literal notranslate"><span class="pre">pointCloudRemoveOutliers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.smoothTris"><code class="docutils literal notranslate"><span class="pre">smoothTris()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.smoothTris_SINC"><code class="docutils literal notranslate"><span class="pre">smoothTris_SINC()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterExtractEdges"><code class="docutils literal notranslate"><span class="pre">filterExtractEdges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.isPolyDataWaterTight"><code class="docutils literal notranslate"><span class="pre">isPolyDataWaterTight()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.isPolyDataPolyLine"><code class="docutils literal notranslate"><span class="pre">isPolyDataPolyLine()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.calculatePolyDataArea"><code class="docutils literal notranslate"><span class="pre">calculatePolyDataArea()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getPolyDataCenterPtNormal"><code class="docutils literal notranslate"><span class="pre">getPolyDataCenterPtNormal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.addMagnitudeArray"><code class="docutils literal notranslate"><span class="pre">addMagnitudeArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.addNormalVelocities"><code class="docutils literal notranslate"><span class="pre">addNormalVelocities()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterDilateErode"><code class="docutils literal notranslate"><span class="pre">filterDilateErode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterExtractSurface"><code class="docutils literal notranslate"><span class="pre">filterExtractSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterExtractTri"><code class="docutils literal notranslate"><span class="pre">filterExtractTri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterTriangulate"><code class="docutils literal notranslate"><span class="pre">filterTriangulate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getVolumeSurfaceAreaOfPolyData"><code class="docutils literal notranslate"><span class="pre">getVolumeSurfaceAreaOfPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.mergeSurfsByPointsInsideVti"><code class="docutils literal notranslate"><span class="pre">mergeSurfsByPointsInsideVti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getTriangleAreaAndNormal"><code class="docutils literal notranslate"><span class="pre">getTriangleAreaAndNormal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.addNormalsToPolyData"><code class="docutils literal notranslate"><span class="pre">addNormalsToPolyData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getBoundaryEdges"><code class="docutils literal notranslate"><span class="pre">getBoundaryEdges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getEdges"><code class="docutils literal notranslate"><span class="pre">getEdges()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedCellIds"><code class="docutils literal notranslate"><span class="pre">getConnectedCellIds()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.extractStructuredSubGrid"><code class="docutils literal notranslate"><span class="pre">extractStructuredSubGrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.extractVOI"><code class="docutils literal notranslate"><span class="pre">extractVOI()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.extractVOI_fromFov"><code class="docutils literal notranslate"><span class="pre">extractVOI_fromFov()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterNullOutsideSurface"><code class="docutils literal notranslate"><span class="pre">filterNullOutsideSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterNullInsideSurface"><code class="docutils literal notranslate"><span class="pre">filterNullInsideSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterResampleToDataset"><code class="docutils literal notranslate"><span class="pre">filterResampleToDataset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterResampleToImage"><code class="docutils literal notranslate"><span class="pre">filterResampleToImage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getAxesDirectionCosinesForNormal"><code class="docutils literal notranslate"><span class="pre">getAxesDirectionCosinesForNormal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterResliceImage"><code class="docutils literal notranslate"><span class="pre">filterResliceImage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterVtiMedian"><code class="docutils literal notranslate"><span class="pre">filterVtiMedian()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterImageGradient"><code class="docutils literal notranslate"><span class="pre">filterImageGradient()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterAnisotropicDiffusion"><code class="docutils literal notranslate"><span class="pre">filterAnisotropicDiffusion()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterSurfaceToImageStencil"><code class="docutils literal notranslate"><span class="pre">filterSurfaceToImageStencil()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterMaskImageBySurface"><code class="docutils literal notranslate"><span class="pre">filterMaskImageBySurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterGetPointsInsideSurface"><code class="docutils literal notranslate"><span class="pre">filterGetPointsInsideSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterGetPointIDsInsideSurface"><code class="docutils literal notranslate"><span class="pre">filterGetPointIDsInsideSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterGetPolydataInsideSurface"><code class="docutils literal notranslate"><span class="pre">filterGetPolydataInsideSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterGetEnclosedPts"><code class="docutils literal notranslate"><span class="pre">filterGetEnclosedPts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.filterGetArrayValuesWithinSurface"><code class="docutils literal notranslate"><span class="pre">filterGetArrayValuesWithinSurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getDataWithThreshold"><code class="docutils literal notranslate"><span class="pre">getDataWithThreshold()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.countPointsInVti"><code class="docutils literal notranslate"><span class="pre">countPointsInVti()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionLargest"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionLargest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionContaining"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionContaining()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionClosestToX"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionClosestToX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionClosestToX_UnStruct"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionClosestToX_UnStruct()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionAll"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionAll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#ngawari.vtkfilters.getConnectedRegionMinDistToX"><code class="docutils literal notranslate"><span class="pre">getConnectedRegionMinDistToX()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#data-type-checkers">Data Type Checkers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#array-operations">Array Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#geometry-creation">Geometry Creation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#filtering-operations">Filtering Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#clipping-and-cutting">Clipping and Cutting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#image-data-operations">Image Data Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#surface-operations">Surface Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#data-conversion">Data Conversion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/vtkfilters.html#utility-functions">Utility Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#module-overview">Module Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/index.html#ftk-mathematical-and-utility-functions">ftk - Mathematical and Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/index.html#fio-file-input-output">fIO - File Input/Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/index.html#vtkfilters-vtk-filtering-and-processing">vtkfilters - VTK Filtering and Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/index.html#basic-import">Basic Import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/index.html#common-patterns">Common Patterns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#basic-geometry-example">Basic Geometry Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#clipping-example">Clipping Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#image-data-example">Image Data Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#mathematical-operations-example">Mathematical Operations Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html#file-i-o-example">File I/O Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to Ngawari</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#code-style">Code Style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#building-documentation">Building Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#issue-reporting">Issue Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ngawari</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Search</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <noscript>
+  <div id="fallback" class="admonition warning">
+    <p class="last">
+      Please activate JavaScript to enable the search functionality.
+    </p>
+  </div>
+  </noscript>
+
+  
+  <div id="search-results">
+  
+  </div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Fraser M. Callaghan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  <script>
+    jQuery(function() { Search.loadIndex("searchindex.js"); });
+  </script>
+  
+  <script id="searchindexloader"></script>
+   
+
+
+</body>
+</html>
