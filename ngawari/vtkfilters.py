@@ -1002,7 +1002,7 @@ def vtiToVts(data):
     return sg.GetOutput()
 
 
-def vtsToVti(dataVts):#, MAKE_ISOTROPIC=False):
+def vtsToVti(dataVts):
     return filterResampleToImage(dataVts)
 
 
@@ -1012,14 +1012,24 @@ def getVtsOrigin(dataVts):
 
 def getVtsResolution(dataVts):
     o,p1,p2,p3 = [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]
-    i0,i1,j0,j1,k0,k1 = dataVts.GetExtent()
-    dataVts.GetPoint(i0,j0,k0, o)
-    dataVts.GetPoint(i0+1,j0,k0, p1)
-    dataVts.GetPoint(i0,j0+1,k0, p2)
-    dataVts.GetPoint(i0,j0,k0+1, p3)
-    di = abs(ftk.distTwoPoints(p1, o))
-    dj = abs(ftk.distTwoPoints(p2, o))
-    dk = abs(ftk.distTwoPoints(p3, o))
+    dims = [0,0,0]
+    dataVts.GetDimensions(dims)
+    dataVts.GetPoint(0,0,0, o)
+    if dims[0] >= 2:
+        dataVts.GetPoint(1,0,0, p1)
+        di = abs(ftk.distTwoPoints(p1, o))
+    else:
+        di = 0.0
+    if dims[1] >= 2:
+        dataVts.GetPoint(0,1,0, p2)
+        dj = abs(ftk.distTwoPoints(p2, o))
+    else:
+        dj = 0.0
+    if dims[2] >= 2:
+        dataVts.GetPoint(0,0,1, p3)
+        dk = abs(ftk.distTwoPoints(p3, o))
+    else:
+        dk = 0.0
     return [di, dj, dk]
 
 
@@ -2133,11 +2143,9 @@ def filterResampleToDataset(src, destData, PASS_POINTS=False):
 def filterResampleToImage(vtsObj, dims=None, bounder=None):
     """
     Resample a vtkStructuredGrid or similar to an image.
-    This is a wrapper around vtkResampleToImage.
-    See the vtk documentation for more details.
 
     :param vtsObj: vtkStructuredGrid or similar
-    :param dims: tuple of ints - dimensions of image. Default is to use the bounds of the vtsObj and calculated resolution.
+    :param dims: tuple of ints - dimensions of image. Default is to use the dimensions of the vtsObj.
     :param bounder: vtkPolyData - bounding box. Default is to use the bounds of the vtsObj.
     :return: vtkImageData
     """
@@ -2161,6 +2169,73 @@ def filterResampleToImage(vtsObj, dims=None, bounder=None):
 
     rif.Update()
     return rif.GetOutput()
+
+
+def getTransposeIDS_and_FlipIDs_VTS2VTI(vtsObj):
+    dims0 = [0,0,0]
+    vtsObj.GetDimensions(dims0)
+    if dims0[0] == 1 or dims0[1] == 1 or dims0[2] == 1:
+        raise ValueError(f"Dimensions are {dims0}. Cannot resample 1D or 2D data to image - use filterExtractSurface instead")
+    corner_points = [[0.0,0.0,0.0] for _ in range(8)]
+    vtsObj.GetPoint(0, 0, 0, corner_points[0])
+    vtsObj.GetPoint(dims0[0]-1, 0, 0, corner_points[1])
+    vtsObj.GetPoint(0, dims0[1]-1, 0, corner_points[2])
+    vtsObj.GetPoint(0, 0, dims0[2]-1, corner_points[3])
+    vtsObj.GetPoint(dims0[0]-1, dims0[1]-1, 0, corner_points[4])
+    vtsObj.GetPoint(dims0[0]-1, 0, dims0[2]-1, corner_points[5])
+    vtsObj.GetPoint(0, dims0[1]-1, dims0[2]-1, corner_points[6])
+    vtsObj.GetPoint(dims0[0]-1, dims0[1]-1, dims0[2]-1, corner_points[7])
+    bounds = vtsObj.GetBounds()
+    bounds_origin = [bounds[0], bounds[2], bounds[4]]
+    corner_points = np.array(corner_points)
+    nabc = np.array([corner_points[1] - corner_points[0], corner_points[2] - corner_points[0], corner_points[3] - corner_points[0]])
+    nabc_norm = np.linalg.norm(nabc, axis=1)
+    nabc_ = nabc / nabc_norm[:, np.newaxis]
+    absN = np.abs(nabc_)
+    tIDs = [np.argmax(absN[:,0]), np.argmax(absN[:,1]), np.argmax(absN[:,2])]
+    tIDs = [int(i) for i in tIDs]
+    if (0 not in tIDs) or (1 not in tIDs) or (2 not in tIDs):
+        print(f"WARNING: Unable to find a good alignment for VTS-to-VTI - using default alignment")
+        tIDs = [0,1,2]
+    flipIDs = []
+    for i in range(3):
+        if nabc_[tIDs[i],i] < 0.0:
+            flipIDs.append(i)
+    originI = corner_points[0]
+    originI_dist = ftk.distTwoPoints(originI, bounds_origin)
+    for i in range(1,8):
+        dist = ftk.distTwoPoints(corner_points[i], bounds_origin)
+        if dist < originI_dist:
+            originI = corner_points[i]
+            originI_dist = dist
+    return tIDs, flipIDs, originI # originI
+
+
+def filterResampleToImage_BestAligned(vtsObj):
+    """
+    Resample a vtkStructuredGrid or similar to an image.
+    This will align the image to the best axis-aligned orientation of the vtsObj.
+    :param vtsObj: vtkStructuredGrid or similar
+    :return: vtkImageData
+    """
+    dims0 = [0,0,0]
+    vtsObj.GetDimensions(dims0)
+    if dims0[0] == 1 or dims0[1] == 1 or dims0[2] == 1:
+        raise ValueError(f"Dimensions are {dims0}. Cannot resample 1D or 2D data to image - use filterExtractSurface instead")
+    res0 = getVtsResolution(vtsObj)
+    tIDs, flipIDs, originI = getTransposeIDS_and_FlipIDs_VTS2VTI(vtsObj)
+    dimsI = [dims0[tIDs[i]] for i in range(3)]
+    resI = [res0[tIDs[i]] for i in range(3)]
+    iiData = buildRawImageData(dimsI, resI, origin=originI)
+    scalarName = getScalarsArrayName(vtsObj)
+    for iArray in getArrayNames(vtsObj):
+        aData = getArrayAsNumpy(vtsObj, iArray, RETURN_3D=True)
+        aDataI = np.transpose(aData, axes=tIDs)
+        for iFlip in flipIDs:
+            aDataI = np.flip(aDataI, axis=iFlip)
+        setArrayFromNumpy(iiData, aDataI, iArray, IS_3D=True)
+    setArrayAsScalars(iiData, scalarName)
+    return iiData
 
 
 def getAxesDirectionCosinesForNormal(normalVector, guidingVector=None):

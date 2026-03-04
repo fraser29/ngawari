@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.1.18] - 2026-03-03
+### Added
+- Function to resample a vtkStructuredGrid or similar to an image, aligned to the best axis-aligned orientation of the vtsObj. (`filterResampleToImage_BestAligned`)
+- Correction in `getVtsResolution` to handle 2D data.
+
 ## [0.1.17] - 2025-12-10
 ### Added
 - Function to set an array as vectors (`setArrayAsVectors`)
