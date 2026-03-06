@@ -1011,6 +1011,7 @@ def getVtsOrigin(dataVts):
 
 
 def getVtsResolution(dataVts):
+    resetIndexing(dataVts)
     o,p1,p2,p3 = [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]
     dims = [0,0,0]
     dataVts.GetDimensions(dims)
@@ -1035,6 +1036,40 @@ def getVtsResolution(dataVts):
 
 def getResolution_VTI(data):
     return data.GetSpacing()
+
+
+def resetIndexing(vts_or_vti_Data):
+    if isVTI(vts_or_vti_Data):
+        resetVTIIndexing(vts_or_vti_Data)
+    elif isVTS(vts_or_vti_Data):
+        resetVTSIndexing(vts_or_vti_Data)
+    else:
+        return
+
+def resetVTSIndexing(vtsData):
+    dims = [0,0,0]
+    vtsData.GetDimensions(dims)
+    vtsData.SetExtent(0, dims[0]-1, 0, dims[1]-1, 0, dims[2]-1)
+
+
+def resetVTIIndexing(vtiData):
+    dims = [0,0,0]
+    vtiData.GetDimensions(dims)
+    vtiData.SetExtent(0, dims[0]-1, 0, dims[1]-1, 0, dims[2]-1)
+    # if not isVTI(vtiData):
+    #     return vtiData
+    # reset = vtk.vtkImageChangeInformation()
+    # reset.SetInputData(vtiData)
+    # reset.SetOutputExtentStart(0, 0, 0)
+    # extent = vtiData.GetExtent()
+    # iMin, _, jMin, _, kMin, _ = extent
+    # offset = (iMin*vtiData.GetSpacing()[0], jMin*vtiData.GetSpacing()[1], kMin*vtiData.GetSpacing()[2])
+    # oldOrigin = [0.0,0.0,0.0]
+    # vtiData.GetPoint(0, 0, 0, oldOrigin)
+    # newOrigin = (oldOrigin[0] + offset[0], oldOrigin[1] + offset[1], oldOrigin[2] + offset[2])
+    # reset.SetOutputOrigin(newOrigin)
+    # reset.Update()
+    # return reset.GetOutput()
 
 
 def getDimsResOriginFromOutline(outline, res, pad):
