@@ -1018,6 +1018,14 @@ class TestResampleOperations(unittest.TestCase):
         self.assertTrue(vtkfilters.isVTI(filtered))
         self.assertEqual(filtered.GetNumberOfPoints(), self.img.GetNumberOfPoints())
 
+    def test_resetIndexing(self):
+        """Test resetIndexing function."""
+        imgSub = vtkfilters.extractStructuredSubGrid(self.img, ijkMinMax=(2, 6, 3, 7, 4, 8))
+        self.assertEqual(imgSub.GetExtent(), (2, 6, 3, 7, 4, 8))
+        vtkfilters.resetIndexing(imgSub)
+        self.assertTrue(vtkfilters.isVTI(imgSub))
+        self.assertEqual(imgSub.GetExtent(), (0, 4, 0, 4, 0, 4))
+
 
 class TestSurfaceOperations(unittest.TestCase):
     """Test surface-related operations."""

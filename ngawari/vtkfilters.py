@@ -1010,6 +1010,35 @@ def getVtsOrigin(dataVts):
     return dataVts.GetPoints().GetPoint(0)
 
 
+def getVtsDirectionVectors(dataVts):    
+    resetIndexing(dataVts)
+    o,p1,p2,p3 = [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]
+    i0,i1,j0,j1,k0,k1 = dataVts.GetExtent()
+    dims = [0,0,0]
+    dataVts.GetDimensions(dims)
+    dataVts.GetPoint(i0,j0,k0, o)
+    if dims[0] >= 1:
+        dataVts.GetPoint(i0+1,j0,k0, p1)
+        di = np.array(p1) - np.array(o)
+    else:
+        di = np.array([1.0, 0.0, 0.0])
+    if dims[1] >= 1:
+        dataVts.GetPoint(i0,j0+1,k0, p2)
+        dj = np.array(p2) - np.array(o)
+    else:
+        dj = np.array([0.0, 1.0, 0.0])
+    if dims[2] >= 1:
+        dataVts.GetPoint(i0,j0,k0+1, p3)
+        dk = np.array(p3) - np.array(o)
+    else:
+        dk = np.array([0.0, 0.0, 1.0])
+    nx = di / np.linalg.norm(di)
+    ny = dj / np.linalg.norm(dj)
+    nz = dk / np.linalg.norm(dk)
+    nxyz = [nx, ny, nz]
+    return nxyz
+
+
 def getVtsResolution(dataVts):
     resetIndexing(dataVts)
     o,p1,p2,p3 = [0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]
@@ -2207,6 +2236,7 @@ def filterResampleToImage(vtsObj, dims=None, bounder=None):
 
 
 def getTransposeIDS_and_FlipIDs_VTS2VTI(vtsObj):
+    resetIndexing(vtsObj)
     dims0 = [0,0,0]
     vtsObj.GetDimensions(dims0)
     if dims0[0] == 1 or dims0[1] == 1 or dims0[2] == 1:
