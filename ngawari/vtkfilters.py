@@ -2377,6 +2377,14 @@ def filterResliceImage(vtiObj, X, normalVector, guidingVector=None,
     return reslice
 
 
+def filterGaussianSmooth(vtiObj, sigma=1.0):
+    gf = vtk.vtkImageGaussianSmooth()
+    gf.SetInputData(vtiObj)
+    gf.SetStandardDeviation(sigma)
+    gf.Update()
+    return gf.GetOutput()
+
+
 def filterVtiMedian(vtiObj, filterKernalSize=3):
     mf = vtk.vtkImageMedian3D()
     mf.SetInputData(vtiObj)

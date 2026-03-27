@@ -581,6 +581,62 @@ def fitPlaneToPointCloud_RANSAC(pts, planeSearchDist_abs, planeFractionToInclude
     return best_plane_normal, best_plane_center
 
 
+def linerFit_RANSAC(x, y, min_inliers_ratio, n_trials=100, sample_size=None, threshold=None):
+    """
+    linear fit using RANSAC to handle outliers .
+
+    Parameters
+    ----------
+    x, y : 1D numpy arrays
+    min_inliers_ratio : float (required)
+        Fraction of total points that must agree with a candidate line for it
+        to be considered a good fit (e.g. 0.65 if up to 35% may be outliers).
+    n_trials : int
+        Number of random trials. Default 100.
+    sample_size : int or None
+        Number of points to sample per trial. Defaults to 10% of n (min 2).
+    threshold : float or None
+        Max residual to count as an inlier. If None, estimated automatically
+        from median abs deviation
+
+    Returns
+    -------
+    best_slope, best_intercept : float
+    best_inliers : boolean array marking inlier points
+    """
+    n = len(x)
+
+    if sample_size is None:
+        sample_size = max(2, int(0.1 * n))
+
+    if threshold is None:
+        # Estimate from MAD of residuals of a quick OLS fit
+        slope0, intercept0, *_ = stats.linregress(x, y)
+        residuals0 = np.abs(y - (slope0 * x + intercept0))
+        threshold = 1.5 * np.median(residuals0)
+
+    best_slope, best_intercept = None, None
+    best_inliers = np.zeros(n, dtype=bool)
+    min_inliers = int(min_inliers_ratio * n)
+    rng = np.random.default_rng(seed=42)
+
+    for _ in range(n_trials):
+        idx = rng.choice(n, size=sample_size, replace=False)
+        xs, ys = x[idx], y[idx]
+        slope, intercept, *_ = stats.linregress(xs, ys)
+        residuals = np.abs(y - (slope * x + intercept))
+        inliers = residuals < threshold
+        if inliers.sum() >= min_inliers:
+            slope, intercept, *_ = stats.linregress(x[inliers], y[inliers])
+            residuals = np.abs(y - (slope * x + intercept))
+            inliers = residuals < threshold
+            if inliers.sum() > best_inliers.sum():
+                best_slope = slope
+                best_intercept = intercept
+                best_inliers = inliers
+
+    return best_slope, best_intercept, best_inliers
+
 # ======================================================================================================================
 # def findCylinderAxis(point_cloud):
 #     """

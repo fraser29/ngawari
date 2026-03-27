@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.1.20] - 2026-03-27
+### Added
+- Function to fit a line using RANSAC to handle outliers. (`linerFit_RANSAC`)
+- vtkfilters.filterGaussianSmooth function to smooth a vtkImageData by Gaussian smoothing.
+
+
 ## [0.1.19] - 2026-03-09
 ### Added
 - Function to reset the indexing of a vtkStructuredGrid or similar after extract region. (`resetIndexing`)
