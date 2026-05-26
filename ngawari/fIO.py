@@ -684,36 +684,37 @@ def readVTKFile(fileName: str) -> vtk.vtkDataObject:
     """
     if not os.path.isfile(fileName):
         raise IOError('## ERROR: %s file not found'%(fileName))
-    if fileName.endswith('vtp'):
+    fileName_lower = fileName.lower()
+    if fileName_lower.endswith('.vtp'):
         reader = vtk.vtkXMLPolyDataReader()
-    elif fileName.endswith('vts'):
+    elif fileName_lower.endswith('.vts'):
         reader = vtk.vtkXMLStructuredGridReader()
-    elif fileName.endswith('vtu'):
+    elif fileName_lower.endswith('.vtu'):
         reader = vtk.vtkXMLUnstructuredGridReader()
-    elif fileName.endswith('stl'):
+    elif fileName_lower.endswith('.stl'):
         reader = vtk.vtkSTLReader()
         reader.ScalarTagsOn()
-    elif fileName.endswith('nii') or fileName.endswith('nii.gz'):
+    elif fileName_lower.endswith('.nii') or fileName_lower.endswith('.nii.gz'):
         reader = vtk.vtkNIFTIImageReader()
-    elif fileName.endswith('vti'):
+    elif fileName_lower.endswith('.vti'):
         reader = vtk.vtkXMLImageDataReader()
-    elif fileName.endswith('vtk'):
+    elif fileName_lower.endswith('.vtk'):
         reader = vtk.vtkPolyDataReader()
-    elif fileName.endswith('vtm'):
+    elif fileName_lower.endswith('.vtm'):
         reader = vtk.vtkXMLMultiBlockDataReader()
-    elif fileName.endswith('nrrd'):
+    elif fileName_lower.endswith('.nrrd'):
         reader = vtk.vtkNrrdReader()
-    elif fileName.endswith('mha') or fileName.endswith('mhd'):
+    elif fileName_lower.endswith('.mha') or fileName_lower.endswith('.mhd'):
         reader = vtk.vtkMetaImageReader()
-    elif fileName.endswith('png'):
+    elif fileName_lower.endswith('.png'):
         reader = vtk.vtkPNGReader()
-    elif fileName.endswith('jpg') or fileName.endswith('jpeg'):
+    elif fileName_lower.endswith('.jpg') or fileName_lower.endswith('.jpeg'):
         reader = vtk.vtkJPEGReader()
-    elif fileName.endswith('tif') or fileName.endswith('tiff'):
+    elif fileName_lower.endswith('.tif') or fileName_lower.endswith('.tiff'):
         reader = vtk.vtkTIFFReader()
-    elif fileName.endswith('ply'):
+    elif fileName_lower.endswith('.ply'):
         reader = vtk.vtkPLYReader()
-    elif fileName.endswith('pvd'):
+    elif fileName_lower.endswith('.pvd'):
         raise IOError(' PVD - should use readPVD()')
     else:
         raise IOError(fileName + ' not correct extension')
